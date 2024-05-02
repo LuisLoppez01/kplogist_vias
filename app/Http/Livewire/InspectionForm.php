@@ -77,11 +77,12 @@ class InspectionForm extends Component
         $user=User::find(auth()->id());
         $yards=$user->yards;
         $yards_id = $yards->pluck('id');
-
+        //dump($yards_id);
         if ($user->getRoleNames()->first() == "Admin" or $user->getRoleNames()->first() == "Coorporativo KP") {
-
-            $yards=Yard::pluck('name','id')->toArray();
+            $yards = $user->yards->pluck('name','id')->toArray();
+            //$yards=Yard::pluck('name','id')->toArray();
             $yards_id=$yards;
+
         } else {
             $yards=Yard::whereIn('id',$yards_id)->pluck('name','id')->toArray();
         }

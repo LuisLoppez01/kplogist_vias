@@ -105,12 +105,17 @@ class UserController extends Controller
             'email' => 'required',
             'company_id' => 'required'
         ]);
+
+        if ($user->company_id != $request->company_id){
+            $user->yards()->detach();
+        }
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'company_id'=>$request->company_id
-
         ]);
+
+
         return redirect()->route('menu.users.index', $user)->with('info','Se actualizó la asignación correctamente');
     }
 
@@ -122,6 +127,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $user->yards()->detach();
         $user->delete();
         return redirect()->route('menu.users.index')->with('info','Se eliminó el usuario correctamente');
     }

@@ -65,7 +65,13 @@ class AssignYardController extends Controller
         $user = User::find($user);
         $useryard = $user->yards;
         //$yards=Yard::where('company_id',$user->company_id)->get();
-        $yards=Yard::all();
+        @dump($user->company->name);
+        if ($user->company->name == "KPLOGISTICS"){
+            $yards=Yard::all();
+        }else{
+            $yards=Yard::where('company_id',$user->company_id)->get();
+        }
+
         return view('menu.assignyards.edit',compact('user','yards','useryard'));
     }
 
