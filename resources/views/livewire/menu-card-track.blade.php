@@ -536,7 +536,6 @@
                                                 </div>
 
                                             </div>
-
                                             @foreach ($selectedInspection[0]->defect_track as $defect)
                                                 <div class="row">
 

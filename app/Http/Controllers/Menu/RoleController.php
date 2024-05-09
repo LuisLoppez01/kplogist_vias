@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
+    protected $model = Role::class;
     /**
      * Display a listing of the resource.
      *
@@ -102,6 +103,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $this->authorize('delete', $role);
         $role->delete();
         return redirect()->route('menu.roles.index')->with('info','Se eliminó el rol correctamente');
     }

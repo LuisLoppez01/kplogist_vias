@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
+    protected $model = Email::class;
     /**
      * Display a listing of the resource.
      *

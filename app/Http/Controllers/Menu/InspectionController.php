@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Inspection;
 use App\Models\Location;
 use App\Models\TrackSection;
+
 /*use App\Models\TrackSection;*/
+
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Yard;
@@ -17,9 +19,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReporteInspeccion;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class InspectionController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -27,13 +31,13 @@ class InspectionController extends Controller
      */
     public function index()
     {
-       /*  $inspections = Inspection::join('yards','inspections.yard_id', '=' , 'yards.id')
-                                 ->join('companies','yards.id', '=' , 'companies.id')
-                                 ->select('inspections.*','yards.id','yards.company_id',  'companies.name')
-                                 ->get();  */
-                                 $inspections = Inspection:: paginate(8);
+        /*  $inspections = Inspection::join('yards','inspections.yard_id', '=' , 'yards.id')
+                                  ->join('companies','yards.id', '=' , 'companies.id')
+                                  ->select('inspections.*','yards.id','yards.company_id',  'companies.name')
+                                  ->get();  */
+        $inspections = Inspection:: paginate(8);
         //return $inspections;
-        return view('menu.inspections.index',compact('inspections'));
+        return view('menu.inspections.index', compact('inspections'));
     }
 
     /**
@@ -50,69 +54,69 @@ class InspectionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
 
-     //return $request;
+        //return $request;
 
-        if($request->type_inspection == 1){
-            $inspection=Inspection::create([
-                'user_id'=>auth()->id(),
-                'yard_id'=>$request->yard_id,
-                'track_id'=>$request->track_id,
-                'tracksection_id'=>$request->tracksection_id,
-                'railroadswitch_id'=>null,
-                'date'=>$request->date,
-                'type_inspection'=>$request->type_inspection,
-                'condition'=>$request->condition,
+        if ($request->type_inspection == 1) {
+            $inspection = Inspection::create([
+                'user_id' => auth()->id(),
+                'yard_id' => $request->yard_id,
+                'track_id' => $request->track_id,
+                'tracksection_id' => $request->tracksection_id,
+                'railroadswitch_id' => null,
+                'date' => $request->date,
+                'type_inspection' => $request->type_inspection,
+                'condition' => $request->condition,
             ]);
         }
-        if($request->type_inspection == 2){
-            $inspection=Inspection::create([
-                'user_id'=>auth()->id(),
-                'yard_id'=>$request->yard_id,
-                'track_id'=>null,
-                'tracksection_id'=>null,
-                'railroadswitch_id'=>$request->railroadswitch_id,
-                'date'=>$request->date,
-                'type_inspection'=>$request->type_inspection,
-                'condition'=>$request->condition,
+        if ($request->type_inspection == 2) {
+            $inspection = Inspection::create([
+                'user_id' => auth()->id(),
+                'yard_id' => $request->yard_id,
+                'track_id' => null,
+                'tracksection_id' => null,
+                'railroadswitch_id' => $request->railroadswitch_id,
+                'date' => $request->date,
+                'type_inspection' => $request->type_inspection,
+                'condition' => $request->condition,
             ]);
         }
-        if ($request->condition == 1){
+        if ($request->condition == 1) {
             $count = count($request->defecto);
-            for ($i = 0; $i < $count; $i++){
+            for ($i = 0; $i < $count; $i++) {
                 $inspection->defect_track()->create([
-                    'component_catalogs_id'=>$request->defecto[$i],
-                    'priority'=>$request->priorities[$i],
-                    'comment'=>$request->comments[$i]
+                    'component_catalogs_id' => $request->defecto[$i],
+                    'priority' => $request->priorities[$i],
+                    'comment' => $request->comments[$i]
                 ]);
             }
         }
-        $inspectionId= $inspection->getKey();
+        $inspectionId = $inspection->getKey();
 
         if ($request->hasFile('file')) {
             $image = $request->file('file');
-            $route = 'images/InspectionImage'. $inspectionId.'.'.$image->getClientOriginalExtension();
-            $url= Storage::put($route, file_get_contents($image));
+            $route = 'images/InspectionImage' . $inspectionId . '.' . $image->getClientOriginalExtension();
+            $url = Storage::put($route, file_get_contents($image));
 
             $inspection->image()->create([
-                'url'=>$route
+                'url' => $route
             ]);
 //{!! asset('img/kp_tracks.jpg') !!}
         }
 
-        return redirect()->route('menu.inspections.create')->with('info','Se registró  satifactoriamente');
+        return redirect()->route('menu.inspections.create')->with('info', 'Se registró  satifactoriamente');
 
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -123,86 +127,95 @@ class InspectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit(Inspection $inspection)
     {
-        return view('menu.inspections.edit',compact('inspection'));
+        return view('menu.inspections.edit', compact('inspection'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Inspection $inspection)
     {
-        if($request->type_inspection == 1){
+        if ($request->type_inspection == 1) {
             $inspection->update([
-                'user_id'=>auth()->id(),
-                'yard_id'=>$request->yard_id,
-                'track_id'=>$request->track_id,
-                'tracksection_id'=>$request->tracksection_id,
-                'railroadswitch_id'=>null,
-                'date'=>$request->date,
-                'type_inspection'=>$request->type_inspection,
-                'condition'=>$request->condition,
+                'user_id' => auth()->id(),
+                'yard_id' => $request->yard_id,
+                'track_id' => $request->track_id,
+                'tracksection_id' => $request->tracksection_id,
+                'railroadswitch_id' => null,
+                'date' => $request->date,
+                'type_inspection' => $request->type_inspection,
+                'condition' => $request->condition,
             ]);
         }
-        if($request->type_inspection == 2){
+        if ($request->type_inspection == 2) {
             $inspection->update([
-                'user_id'=>auth()->id(),
-                'yard_id'=>$request->yard_id,
-                'track_id'=>null,
-                'tracksection_id'=>null,
-                'railroadswitch_id'=>$request->railroadswitch_id,
-                'date'=>$request->date,
-                'type_inspection'=>$request->type_inspection,
-                'condition'=>$request->condition,
+                'user_id' => auth()->id(),
+                'yard_id' => $request->yard_id,
+                'track_id' => null,
+                'tracksection_id' => null,
+                'railroadswitch_id' => $request->railroadswitch_id,
+                'date' => $request->date,
+                'type_inspection' => $request->type_inspection,
+                'condition' => $request->condition,
             ]);
         }
-        if ($request->condition == 0){
+        if ($request->condition == 0) {
             $inspection->defect_track()->delete();
         }
-        if ($request->condition == 1){
+        if ($request->condition == 1) {
             $inspection->defect_track()->delete();
             $count = count($request->defecto);
-            for ($i = 0; $i < $count; $i++){
+            for ($i = 0; $i < $count; $i++) {
                 $inspection->defect_track()->create([
-                    'component_catalogs_id'=>$request->defecto[$i],
-                    'priority'=>$request->priorities[$i],
-                    'comment'=>$request->comments[$i]
+                    'component_catalogs_id' => $request->defecto[$i],
+                    'priority' => $request->priorities[$i],
+                    'comment' => $request->comments[$i]
                 ]);
             }
         }
 
         //codigo de img
-        return redirect()->route('menu.inspections.index')->with('info','Se actualizó el registro satifactoriamente');
+        return redirect()->route('menu.inspections.index')->with('info', 'Se actualizó el registro satifactoriamente');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Inspection $inspection)
     {
-        //
+        $routeName = 'menu.inspections.index';
+        try {
+            $this->authorize('delete', $inspection);
+            $inspection->delete();
+            return redirect()->route($routeName)->with('info', 'Se eliminó la inspeccion correctamente');
+        } catch (AuthorizationException $e) {
+            return redirect()->route($routeName)->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->route($routeName)->with('info', 'Ocurrió un error al eliminar la inspección.');
+        }
     }
 
     public function enviarReporte()
     {
-        $user=User::find(auth()->id());
-        $today=Carbon::today()->toDateString();
+        $user = User::find(auth()->id());
+        $today = Carbon::today()->toDateString();
 
         $inspections = Inspection::where('user_id', auth()->id())
-                       ->where('sent', 0)
-                       ->where('date','LIKE', '%' .$today. '%')
-                       ->get();
+            ->where('sent', 0)
+            ->where('date', 'LIKE', '%' . $today . '%')
+            ->get();
 
         /* $yards = $inspections->map(function ($inspection) {
             return $inspection->yard;
@@ -221,8 +234,8 @@ class InspectionController extends Controller
         */
 
         if ($inspections->count() > 0) {
-            $kpMailList=['sistemas.kplogistics@gmail.com','Luisloppez01@gmail.com','joalmaes0814@gmail.com',$user->email];
-            $correoEnviado = Mail::to(['sistemas.kplogistics@gmail.com','fernando.espinosa@kplogistics.com.mx'])->send(new ReporteInspeccion($inspections,$today));
+            $kpMailList = ['sistemas.kplogistics@gmail.com', 'Luisloppez01@gmail.com', 'joalmaes0814@gmail.com', $user->email];
+            $correoEnviado = Mail::to(['sistemas.kplogistics@gmail.com', 'fernando.espinosa@kplogistics.com.mx'])->send(new ReporteInspeccion($inspections, $today));
 
             if ($correoEnviado) {
                 // El correo se envió exitosamente
@@ -234,7 +247,6 @@ class InspectionController extends Controller
         } else {
             return redirect()->back()->with('error', 'No existen inspecciones');
         }
-
 
 
     }

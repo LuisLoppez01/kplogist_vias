@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ComponentCatalogController extends Controller
 {
+    protected $model = ComponentCatalog::class;
     /**
      * Display a listing of the resource.
      *
@@ -105,6 +106,7 @@ class ComponentCatalogController extends Controller
      */
     public function destroy(ComponentCatalog $componentcatalog)
     {
+        $this->authorize('delete', $componentcatalog);
         $componentcatalog->delete();
         return redirect()->route('menu.componentcatalogs.index')->with('info','Se eliminó el componente correctamente');
     }

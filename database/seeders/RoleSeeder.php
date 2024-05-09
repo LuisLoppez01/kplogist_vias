@@ -27,6 +27,7 @@ class RoleSeeder extends Seeder
 
        Permission::create(['name' => 'Ubicaciones'])->syncRoles([$role1, $role2]);
        Permission::create(['name' => 'Empresas'])->syncRoles([$role1, $role2]);
+
        Permission::create(['name' => 'Patios'])->syncRoles([$role1, $role2]);
        Permission::create(['name' => 'Vias'])->syncRoles([$role1, $role2]);
        Permission::create(['name' => 'Tramos'])->syncRoles([$role1, $role2]);
@@ -39,6 +40,7 @@ class RoleSeeder extends Seeder
 
        Permission::create(['name' => 'Inspecciones'])->syncRoles([$role1, $role2, $role3,$role4]);
        Permission::create(['name' => 'Realizar inspeccion'])->syncRoles([$role1, $role2, $role5]);
+
        Permission::create(['name' => 'Correos'])->syncRoles([$role1, $role2]);
        Permission::create(['name' => 'Reportes'])->syncRoles([$role1, $role2, $role3, $role4]);
        Permission::create(['name' => 'Tarjetas Vias'])->syncRoles([$role1, $role2, $role3, $role4]);

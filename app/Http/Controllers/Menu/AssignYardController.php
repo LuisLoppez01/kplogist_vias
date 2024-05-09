@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssignYard;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Yard;
@@ -10,6 +11,7 @@ use App\Models\Yard;
 
 class AssignYardController extends Controller
 {
+    protected $model = AssignYard::class;
     /**
      * Display a listing of the resource.
      *

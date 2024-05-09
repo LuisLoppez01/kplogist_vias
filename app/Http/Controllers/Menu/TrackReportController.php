@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Menu;
 
 use App\Http\Controllers\Controller;
 use App\Models\Inspection;
+use App\Models\TrackReport;
 use App\Models\TrackSection;
 use App\Models\User;
 use App\Models\Yard;
@@ -14,6 +15,7 @@ use App\Exports\ExportReportToExcel;
 
 class TrackReportController extends Controller
 {
+    protected $model = TrackReport::class;
     /**
      * Display a listing of the resource.
      *

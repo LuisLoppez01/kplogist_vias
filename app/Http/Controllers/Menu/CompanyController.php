@@ -11,6 +11,7 @@ use Livewire\WithPagination;
 
 class CompanyController extends Controller
 {
+    protected $model = Company::class;
     use WithPagination;
     protected $paginationTheme="bootstrap";
     /**
@@ -114,6 +115,7 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
+        $this->authorize('delete', $company);
         $company->delete();
         return redirect()->route('menu.companies.index')->with('info','Se eliminó la empresa correctamente');
     }

@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    protected $model = User::class;
     /**
      * Display a listing of the resource.
      *
@@ -127,6 +128,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
         $user->yards()->detach();
         $user->delete();
         return redirect()->route('menu.users.index')->with('info','Se eliminó el usuario correctamente');

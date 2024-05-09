@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 
 class YardController extends Controller
 {
+    protected $model = Yard::class;
     /**
      * Display a listing of the resource.
      *
@@ -112,6 +113,7 @@ class YardController extends Controller
      */
     public function destroy(Yard $yard)
     {
+        $this->authorize('delete', $yard);
         $yard->users()->detach();
         $yard->delete();
         return redirect()->route('menu.yards.index')->with('info', 'Se eliminó el patio correctamente');

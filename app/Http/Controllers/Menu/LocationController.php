@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Menu;
 use App\Http\Controllers\Controller;
 use App\Models\Location;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Gate;
 class LocationController extends Controller
 {
+    protected $model = Location::class;
     /**
      * Display a listing of the resource.
      *
@@ -103,6 +104,7 @@ class LocationController extends Controller
      */
     public function destroy(Location $location)
     {
+        $this->authorize('delete', $location);
         $location->delete();
         return redirect()->route('menu.locations.index')->with('info','Se eliminó la locación correctamente');
     }

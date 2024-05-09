@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class TrackController extends Controller
 {
+    protected $model = Track::class;
     /**
      * Display a listing of the resource.
      *
@@ -181,6 +182,7 @@ class TrackController extends Controller
      */
     public function destroy(Track $track)
     {
+        $this->authorize('delete', $track);
         $track->delete();
         return redirect()->route('menu.tracks.index')->with('info', 'Se eliminó la vía correctamente');
     }

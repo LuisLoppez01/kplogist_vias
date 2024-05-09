@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Livewire\WithPagination;
 class TrackSectionController extends Controller
 {
+    protected $model = TrackSection::class;
     use WithPagination;
     protected $paginationTheme="bootstrap";
     /**
@@ -107,6 +108,7 @@ class TrackSectionController extends Controller
      */
     public function destroy(TrackSection $tracksection)
     {
+        $this->authorize('delete', $tracksection);
         $tracksection->delete();
         return redirect()->route('menu.tracksections.index')->with('info','Se eliminó el tramo correctamente');
     }

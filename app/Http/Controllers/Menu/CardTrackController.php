@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Models\CardTrack;
 use Illuminate\Http\Request;
 
 class CardTrackController extends Controller
 {
+    protected $model = CardTrack::class;
     /**
      * Display a listing of the resource.
      *

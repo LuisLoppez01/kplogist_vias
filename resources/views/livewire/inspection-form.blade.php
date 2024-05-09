@@ -46,6 +46,7 @@
     </div>
 
     <div class="row">
+
         <div class="form-group col-12 col-sm-4">
             <strong>Patios</strong>
             @error('yards')

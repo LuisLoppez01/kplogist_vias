@@ -92,11 +92,13 @@
                             </td>
                             <td width='10px'><a class="btn btn-secondary" href={{route('menu.tracks.edit',$track)}}>Editar</a></td>
                             <td width='10px'>
+                                @can('delete', $track)
                                 <form action="{{route('menu.tracks.destroy',$track)}}" method="post">
                                     @method('delete')
                                     @csrf
                                     <button class="btn btn-danger" type="submit">Eliminar</button>
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                     @empty

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class RailroadSwitchController extends Controller
 {
+    protected $model = RailroadSwitch::class;
     /**
      * Display a listing of the resource.
      *
@@ -108,6 +109,7 @@ class RailroadSwitchController extends Controller
      */
     public function destroy(RailroadSwitch $railroadswitch)
     {
+        $this->authorize('delete', $railroadswitch);
         $railroadswitch->delete();
         return redirect()->route('menu.railroadswitches.index')->with('info','Se eliminó el herraje correctamente');
     }
