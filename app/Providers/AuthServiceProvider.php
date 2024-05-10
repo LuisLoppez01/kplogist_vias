@@ -31,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view', [RouteAccessPolicy::class, 'view']);
         Gate::define('create', [RouteAccessPolicy::class, 'create']);
         Gate::define('update', [RouteAccessPolicy::class, 'update']);
+        Gate::define('edit', [RouteAccessPolicy::class, 'edit']);
         Gate::define('delete', [RouteAccessPolicy::class, 'delete']);
 
     }

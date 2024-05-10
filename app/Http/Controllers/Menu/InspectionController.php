@@ -145,7 +145,15 @@ class InspectionController extends Controller
      */
     public function edit(Inspection $inspection)
     {
-        return view('menu.inspections.edit', compact('inspection'));
+        $routeName = 'menu.inspections.index';
+        try {
+            $this->authorize('edit', $inspection);
+            return view('menu.inspections.edit', compact('inspection'));
+        } catch (AuthorizationException $e) {
+            return redirect()->route($routeName)->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->route($routeName)->with('info', 'Ocurrió un error al acceder el recurso.');
+        }
     }
 
     /**

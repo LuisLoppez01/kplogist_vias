@@ -47,6 +47,13 @@ class   RouteAccessPolicy
     {
         return $user->hasAnyRole(['Admin', 'CorporativoKP']);
     }
+    public function edit(User $user,$model)
+    {
+        //return !$user->hasRole('InspectorKP');
+        return !$user->hasRole('InspectorKP')
+            ? true
+            : throw new AuthorizationException('No tiene permiso para editar este recurso.');
+    }
 
     public function delete(User $user)
     {
