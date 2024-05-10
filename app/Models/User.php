@@ -74,4 +74,7 @@ class User extends Authenticatable
     public function yards(){
         return $this->belongsToMany('App\Models\Yard');
     }
+    public function inspections(){
+        return $this->hasMany('App\Models\Inspection');
+    }
 }

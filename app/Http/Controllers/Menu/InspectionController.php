@@ -35,8 +35,21 @@ class InspectionController extends Controller
                                   ->join('companies','yards.id', '=' , 'companies.id')
                                   ->select('inspections.*','yards.id','yards.company_id',  'companies.name')
                                   ->get();  */
-        $inspections = Inspection:: paginate(8);
-        //return $inspections;
+        $user = Auth::user();
+        $yardIds = Yard::where('company_id', $user->company_id)->pluck('id');
+
+        //dd($user->yards->pluck('id'),$yardIds);
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $inspections = Inspection::paginate(8);
+        }elseif($user->hasRole('Coordinador')){
+            $yardIds = Yard::where('company_id', $user->company_id)->pluck('id');
+            $inspections = Inspection::whereIn('yard_id', $yardIds)->paginate(8);
+            //dd($yardIds,$inspections);
+        }elseif($user->hasRole('Supervisor')){
+            $inspections = Inspection::whereIn('yard_id', $user->yards->pluck('id'))->paginate(8);
+        }elseif($user->hasRole('InspectorKP')){
+            $inspections = $user->inspections()->paginate(8);
+        }
         return view('menu.inspections.index', compact('inspections'));
     }
 

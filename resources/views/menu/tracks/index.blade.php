@@ -13,6 +13,11 @@
             <strong>Éxito!</strong> {{session('info')}}
         </div>
     @endif
+    @if(session('error'))
+        <div class="alert alert-danger">
+            <strong>Error!</strong> {{ session('error') }}
+        </div>
+    @endif
     <div class="card">
         <div class="card-header">
             <a href="{{route('menu.tracks.create')}}" class="btn btn-primary">Registrar Vía</a>
