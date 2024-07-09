@@ -236,8 +236,20 @@ class InspectionController extends Controller
         $inspections = Inspection::where('user_id', auth()->id())
             ->where('sent', 0)
             ->where('date', 'LIKE', '%' . $today . '%')
+            ->with('defect_track')
             ->get();
 
+        foreach ($inspections as $inspection){
+            $inspection->update([
+                'active' => 1,
+            ]);
+        }
+
+/*        $inspection = [Inspection::where('user_id', auth()->id())
+            ->where('sent', 0)
+            ->where('date', 'LIKE', '%' . $today . '%')
+            ->with('defect_track')
+            ->first()];*/
         /* $yards = $inspections->map(function ($inspection) {
             return $inspection->yard;
         });
@@ -254,15 +266,14 @@ class InspectionController extends Controller
         return $emailLists;
         */
 
+
         if ($inspections->count() > 0) {
             $kpMailList = ['sistemas.kplogistics@gmail.com', 'Luisloppez01@gmail.com', 'joalmaes0814@gmail.com', $user->email];
-            $correoEnviado = Mail::to(['sistemas.kplogistics@gmail.com', 'fernando.espinosa@kplogistics.com.mx'])->send(new ReporteInspeccion($inspections, $today));
+            $correoEnviado = Mail::to('luis.lopez@kplogistics.com.mx')->send(new ReporteInspeccion($inspections, $today));
 
             if ($correoEnviado) {
-                // El correo se envió exitosamente
                 return redirect()->back()->with('info', 'El reporte ha sido enviado por correo.');
             } else {
-                // Ocurrió un error al enviar el correo
                 return redirect()->back()->with('error', 'Error al enviar el correo. Por favor, intenta de nuevo.');
             }
         } else {

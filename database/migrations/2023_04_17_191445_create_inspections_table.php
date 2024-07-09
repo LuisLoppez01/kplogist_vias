@@ -31,7 +31,7 @@ return new class extends Migration
 /*            $table->text('comments')->nullable();
             $table->integer('priority');*/
             //$table->integer('status');
-            $table->integer('active')->default(1);
+            $table->integer('active')->default(0);
             $table->integer('sent')->default(0);
 
             $table->timestamps();

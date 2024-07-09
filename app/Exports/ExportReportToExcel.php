@@ -1,27 +1,1 @@
-<?php
-
-namespace App\Exports;
-use \Maatwebsite\Excel\Concerns\FromCollection;
-use Illuminate\Contracts\View\View;
-use \Maatwebsite\Excel\Concerns\FromView;
-class ExportReportToExcel implements FromView
-{
-
-    /**
-     * @inheritDoc
-     */
-    protected $reports;
-
-    public function __construct($reports)
-    {
-        $this->reports = $reports;
-    }
-
-    public function view(): View
-    {
-        // Retorna la vista que contiene el diseño del archivo Excel
-        return view('menu.trackreports.index', [
-            'reports' => $this->reports,
-        ]);
-    }
-}
+<?phpnamespace App\Exports;use Maatwebsite\Excel\Concerns\WithMultipleSheets;class ExportReportToExcel implements WithMultipleSheets{    /**     * @inheritDoc     */    protected $reports;    public function __construct($reports)    {        $this->reports = $reports;    }    public function sheets(): array    {        $sheets = [];        $sheets[] = new Sheet1Export($this->reports);        $sheets[] = new Sheet2Export($this->reports);        return $sheets;    }}

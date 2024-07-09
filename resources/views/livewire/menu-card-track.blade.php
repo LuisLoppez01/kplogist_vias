@@ -15,13 +15,11 @@
 
                             <div class="profile-id">
 
-                                <span>{{ $yard->id }}</span>
-
                             </div>
 
                             <div class="profile-name"><span>{{ $yard->name }}</span></div>
 
-                            <div class="profile-username"><span>{{ $yard->name }}</span></div>
+
 
                         </div>
 
@@ -35,7 +33,6 @@
     @endif
 
     @if ($showModal1)
-
         <div class="card">
 
             <h5 class="card-header">Vias o Herrajes</h5>
@@ -56,7 +53,7 @@
 
                     @endphp
 
-                    @foreach ($tracks as $track)
+                    @foreach ($tracks as $index => $track)
                         @foreach ($track->tracksections as $tracksection)
                             @if ($tracksection->inspectionsForTrackSection->count() > 0)
                                 @php
@@ -91,9 +88,7 @@
                                 wire:click="openModal2({{ $track->id }})">
 
                                 <div class="profile-id">
-
-                                    <span>{{ $track->id }}</span>
-
+                                    <span>Ultima inspección: {{isset($inspectiontracks[$index]) ? $inspectiontracks[$index]->date: 'No hay registro'}}</span>
                                 </div>
 
                                 <div class="profile-name"><span>{{ $track->name }}</span></div>
@@ -115,7 +110,7 @@
 
                 <div class="row">
 
-                    @foreach ($railroadswitches as $railroadswitch)
+                    @foreach ($railroadswitches as $index => $railroadswitch)
                         @if ($railroadswitch->inspections->count() > 0)
                             @if ($railroadswitch->inspections->sortByDesc('id')->first()->condition == 0)
                                 @php
@@ -146,9 +141,7 @@
                                 wire:click="openModal3({{ $railroadswitch->id }},'switch')">
 
                                 <div class="profile-id">
-
-                                    <span>{{ $railroadswitch->id }}</span>
-
+                                    <span>Ultima inspección: {{isset($inspectionrailroadswitchs[$index]) ? $inspectionrailroadswitchs[$index]->date: 'No hay registro'}}</span>
                                 </div>
 
                                 <div class="profile-name"><span>{{ $railroadswitch->name }}</span></div>
@@ -217,7 +210,7 @@
 
                                 <div class="profile-id">
 
-                                    <span>{{ $tracksection->id }}</span>
+{{--                                    <span>{{ $tracksection->id }}</span>--}}
 
                                 </div>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Menu;
 
 use App\Http\Controllers\Controller;
 use App\Models\Inspection;
+use App\Models\RailroadSwitch;
 use App\Models\TrackReport;
 use App\Models\TrackSection;
 use App\Models\User;
@@ -16,6 +17,7 @@ use App\Exports\ExportReportToExcel;
 class TrackReportController extends Controller
 {
     protected $model = TrackReport::class;
+
     /**
      * Display a listing of the resource.
      *
@@ -49,48 +51,84 @@ class TrackReportController extends Controller
             /*'track_id' => 'required',*/
 
         ]);
-        if ($request->yard_id == 0) {
-            $user = User::find(auth()->id());
-            $yards = $user->yards;
-            $yards_id = $yards->pluck('id');
-            $yards = Yard::whereIn('id', $yards_id)->pluck('id')->toArray();
-            $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
-                ->whereIn('yard_id', $yards);
+        if ($request->type_inspection == 1) {
+            if ($request->yard_id == 0) {
+                $user = User::find(auth()->id());
+                $yards = $user->yards;
+                $yards_id = $yards->pluck('id');
+                $yards = Yard::whereIn('id', $yards_id)->pluck('id')->toArray();
+                $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
+                    ->whereIn('yard_id', $yards);
 
-            if ($request->condition === '0' || $request->condition === '1') {
-                $generatedInspection->where('condition', $request->condition);
+                if ($request->condition === '0' || $request->condition === '1') {
+                    $generatedInspection->where('condition', $request->condition);
+                }
+                $result = $generatedInspection->get();
+                $data = "OnlyYard";
+            } elseif ($request->option == 1) {
+                if ($request->track_id == 0) {
+                    $tracks = Track::where('yard_id', $request->yard_id)->pluck('id')->toArray();
+                    $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
+                        ->where('yard_id', $request->yard_id)
+                        ->whereIn('track_id', $tracks);
+                    if ($request->condition === '0' || $request->condition === '1') {
+                        $generatedInspection->where('condition', $request->condition);
+                    }
+                    $result = $generatedInspection->get();
+                } elseif ($request->tracksection_id == 0) {
+                    $tracksections = TrackSection::where('track_id', $request->track_id)->pluck('id')->toArray();
+                    $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
+                        ->where('yard_id', $request->yard_id)
+                        ->where('track_id', $request->track_id)
+                        ->whereIn('tracksection_id', $tracksections);
+                    if ($request->condition === '0' || $request->condition === '1') {
+                        $generatedInspection->where('condition', $request->condition);
+                    }
+                    $result = $generatedInspection->get();
+                } else {
+                    $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
+                        ->where('yard_id', $request->yard_id)
+                        ->where('track_id', $request->track_id)
+                        ->where('tracksection_id', $request->tracksection_id);
+                    if ($request->condition === '0' || $request->condition === '1') {
+                        $generatedInspection->where('condition', $request->condition);
+                    }
+
+                    $result = $generatedInspection->get();
+                }
+                $data = "option1";
+            } elseif ($request->option == 2) {
+                $data = "option2";
+                if ($request->railroadswitch_id == 0) {
+                    $railroadswitches = RailroadSwitch::where('yard_id', $request->yard_id)->pluck('id')->toArray();
+                    $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
+                        ->where('yard_id', $request->yard_id)
+                        ->whereIn('railroadswitch_id', $railroadswitches);
+                    if ($request->condition === '0' || $request->condition === '1') {
+                        $generatedInspection->where('condition', $request->condition);
+                    }
+                    $result = $generatedInspection->get();
+                } else {
+                    $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
+                        ->where('yard_id', $request->yard_id)
+                        ->where('railroadswitch_id', $request->railroadswitch_id);
+                    if ($request->condition === '0' || $request->condition === '1') {
+                        $generatedInspection->where('condition', $request->condition);
+                    }
+                    $result = $generatedInspection->get();
+                }
             }
-            $result = $generatedInspection->get();
-        } elseif ($request->track_id == 0) {
-            $tracks = Track::where('yard_id', $request->yard_id)->pluck('id')->toArray();
-            $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
-                ->where('yard_id', $request->yard_id)
-                ->whereIn('track_id', $tracks);
-            if ($request->condition === '0' || $request->condition === '1') {
-                $generatedInspection->where('condition', $request->condition);
-            }
-            $result = $generatedInspection->get();
-        } elseif ($request->tracksection_id == 0) {
-            $tracksections = TrackSection::where('track_id', $request->track_id)->pluck('id')->toArray();
-            $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
-                ->where('yard_id', $request->yard_id)
-                ->where('track_id', $request->track_id)
-                ->whereIn('tracksection_id', $tracksections);
-            if ($request->condition === '0' || $request->condition === '1') {
-                $generatedInspection->where('condition', $request->condition);
-            }
-            $result = $generatedInspection->get();
-        } else {
-            $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
-                ->where('yard_id', $request->yard_id)
-                ->where('track_id', $request->track_id)
-                ->where('tracksection_id', $request->tracksection_id);
-            if ($request->condition === '0' || $request->condition === '1') {
-                $generatedInspection->where('condition', $request->condition);
-            }
-            $result = $generatedInspection->get();
+
+        } elseif ($request->type_inspection == 2){
+            $data= "2";
+        }elseif ($request->type_inspection == 3){
+            $data= "3";
         }
-        return Excel::download(new ExportReportToExcel($result), 'datos.xlsx');
+
+        dump($data);
+        /*        $response = Excel::download(new ExportReportToExcel($result), 'datos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+                ob_end_clean();
+                return $response;*/
     }
 
     /**

@@ -1,79 +1,1 @@
-
-<div x-data="{ optionYard: '', optionTrack:''}">
-    <div class="row d-flex justify-content-end">
-        <div class="form-group col-12 col-sm-4">
-            <strong class="d-flex justify-content-center">Usuario</strong>
-            @error('users')
-            <small class="text-danger">
-                <strong>{{$message}}</strong>
-            </small>
-            @enderror
-            {!! Form::text('name', $user->name, ['class' => 'form-control','readonly' => true]); !!}
-        </div>
-    </div>
-    <div class="form-group col-12" x-data="{ selectedOption: null }">
-        <strong>Condición (Opcional)</strong>
-        <div class="row">
-            <div class="form-group col-6">
-                {!! Form::radio('condition', '0', false, ['x-on:click'=>'selectedOption === \'0\' ? selectedOption = null : selectedOption = \'0\'', 'x-model'=>'selectedOption']) !!}
-                {!! Form::label('condition', 'OK') !!}
-            </div>
-            <div class="form-group col-6">
-                {!! Form::radio('condition', '1', false, ['x-on:click'=>'selectedOption === \'1\' ? selectedOption = null : selectedOption = \'1\'', 'x-model'=>'selectedOption']) !!}
-                {!! Form::label('condition', 'BO') !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-10">
-            <div class=" d-flex flex-row align-items-center justify-content-between">
-                <strong class="mr-3">Patios:</strong>
-                @error('yards')
-                <small class="text-danger">
-                    <strong>{{$message}}</strong>
-                </small>
-                @enderror
-                {!! Form::select('yard_id', [0 => 'TODO'] + $yards, null, ['x-model'=>'optionYard', 'placeholder'=> 'Selecciona una opción','required'=>'required','class' =>'form-control','style'=>'width:50rem','wire:model' => 'selectedYards']) !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-10" x-show="optionYard !== '0'">
-            <div class=" d-flex flex-row align-items-center justify-content-between">
-                <strong class="mr-3">Vías:</strong>
-                @error('tracks')
-                <small class="text-danger">
-                    <strong>{{$message}}</strong>
-                </small>
-                @enderror
-                {!! Form::select('track_id', [0 => 'TODO'] + $tracks , null, ['x-model'=>'optionTrack','id' => 'track', 'placeholder'=> 'Selecciona una opción','class' =>'form-control','style'=>'width:50rem','wire:model' => 'selectedTracks']) !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-10" x-show="optionYard !== '0' && optionTrack !=='0'"  >
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <strong class="mr-3">Tramos de vías:</strong>
-                @error('tracksections')
-                <small class="text-danger">
-                    <strong>{{$message}}</strong>
-                </small>
-                @enderror
-                {!! Form::select('tracksection_id', [0 => 'TODO'] + $tracksections , null, ['id' => 'track', 'placeholder'=> 'Selecciona una opción','class' =>'form-control', 'style'=>'width:50rem']) !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="input-group col-10 d-flex justify-content-between">
-            <div class="col-6">
-                <strong class="mr-3">Fecha inicial:</strong> <!-- Fecha de inicio -->
-                {!! Form::date('initial_date', null, ['class' => 'form-control','max'=>$currentDateTime]) !!}
-            </div>
-            <div class="col-6">
-                <strong class="mr-3">Fecha final:</strong> <!-- Fecha final -->
-                {!! Form::date('final_date', null, ['class' => 'form-control','max'=>$currentDateTime]) !!}
-            </div>
-        </div>
-    </div>
-    {{--@dump($selectedYards,$selectedTracks)--}}
-</div>
+<div x-data="{ selectedTypeInspection: '3'}" class="p-3 pt-5">    {{--    <div class="row d-flex justify-content-end">            <div class="form-group col-12 col-sm-4">                <strong class="d-flex justify-content-center">Usuario</strong>                @error('users')                <small class="text-danger">                    <strong>{{$message}}</strong>                </small>                @enderror                {!! Form::text('name', $user->name, ['class' => 'form-control','readonly' => true]); !!}            </div>        </div>--}}    <div class="row">        <div class="form-group col-12">            <strong>Tipo de reporte</strong>            <div class="row ">                <div class="form-group col-4">                    {!! Form::radio('type_inspection', '3', false,['wire:model'=>'selectedComponent','x-model' => 'selectedTypeInspection']) !!}                    {!! Form::label('type_inspection', 'Por cada ultima inspección') !!}                </div>                <div class="form-group col-4">                    {!! Form::radio('type_inspection', '2', false,['wire:model'=>'selectedComponent','x-model' => 'selectedTypeInspection']) !!}                    {!! Form::label('type_inspection', 'Por n cantidad de inspecciones') !!}                </div>                <div class="form-group col-4">                    {!! Form::radio('type_inspection', '1', true, ['wire:model'=>'selectedComponent','x-model' => 'selectedTypeInspection']) !!}                    {!! Form::label('type_inspection', 'Por fecha') !!}                </div>            </div>        </div>    </div>    <div class="row">        <div x-data="{option:'1', optionYard: '', optionTrack:''}">            <div class="form-group col-12" x-data="{ selectedOption: null }">                <strong>Condición (Opcional)</strong>                <div class="row">                    <div class="form-group col-6">                        {!! Form::radio('condition', '0', false, ['x-on:click'=>'selectedOption === \'0\' ? selectedOption = null : selectedOption = \'0\'', 'x-model'=>'selectedOption']) !!}                        {!! Form::label('condition', 'OK') !!}                    </div>                    <div class="form-group col-6">                        {!! Form::radio('condition', '1', false, ['x-on:click'=>'selectedOption === \'1\' ? selectedOption = null : selectedOption = \'1\'', 'x-model'=>'selectedOption']) !!}                        {!! Form::label('condition', 'BO') !!}                    </div>                </div>            </div>            <div class="row">                <div class="form-group col-10">                    <div class=" d-flex flex-row align-items-center justify-content-between">                        <strong class="mr-3">Patios:</strong>                        @error('yards')                        <small class="text-danger">                            <strong>{{$message}}</strong>                        </small>                        @enderror                        {!! Form::select('yard_id', [0 => 'TODO'] + $yards, null, ['x-model'=>'optionYard', 'placeholder'=> 'Selecciona una opción','required'=>'required','class' =>'form-control','style'=>'width:50rem','wire:model' => 'selectedYards']) !!}                    </div>                </div>            </div>            <div class="form-group col-12" x-show="optionYard !== '0'">                <strong>Via o Herraje</strong>                <div class="row">                    <div class="form-group col-6">                        {!! Form::radio('option', '1', false, ['wire:model'=>'selectedTorR', 'x-model'=>'option']) !!} {{--selectedTorR = selectedTrackorRailroadswitch--}}                        {!! Form::label('option', 'Via') !!}                    </div>                    <div class="form-group col-6">                        {!! Form::radio('option', '2', false, ['wire:model'=>'selectedTorR', 'x-model'=>'option']) !!} {{--selectedTorR = selectedTrackorRailroadswitch--}}                        {!! Form::label('option', 'Herraje') !!}                    </div>                </div>            </div>            <div class="row" x-show="option=='1'">                <div class="form-group col-6" x-show="optionYard !== '0'">                    <div class=" d-flex flex-row align-items-center justify-content-between">                        <strong class="mr-3">Vías:</strong>                        @error('tracks')                        <small class="text-danger">                            <strong>{{$message}}</strong>                        </small>                        @enderror                        {!! Form::select('track_id', [0 => 'TODO'] + $tracks , null, ['x-model'=>'optionTrack','id' => 'track', 'placeholder'=> 'Selecciona una opción','class' =>'form-control','style'=>'width:50rem','wire:model' => 'selectedTracks','x-bind:required' => 'optionYard !== "0" ? option === "1" ? true : null : null']) !!}                    </div>                </div>                <div class="form-group col-6" x-show="optionYard !== '0' && optionTrack !=='0'">                    <div class="d-flex flex-row align-items-center justify-content-between">                        <strong class="mr-3">Tramos:</strong>                        @error('tracksections')                        <small class="text-danger">                            <strong>{{$message}}</strong>                        </small>                        @enderror                        {!! Form::select('tracksection_id', [0 => 'TODO'] + $tracksections , null, ['id' => 'tracksections', 'placeholder'=> 'Selecciona una opción','class' =>'form-control', 'style'=>'width:50rem']) !!}                    </div>                </div>            </div>            <div class="row" x-show="option=='2'">                <div class="form-group col-10" x-show="optionYard !== '0' && optionTrack !=='0'">                    <div class="d-flex flex-row align-items-center justify-content-between">                        <strong class="mr-3">Herraje o cambio:</strong>                        @error('tracksections')                        <small class="text-danger">                            <strong>{{$message}}</strong>                        </small>                        @enderror                        {!! Form::select('railroadswitch_id', [0 => 'TODO'] + $railroadswitches , null, ['id' => 'railroadswitch_id', 'placeholder'=> 'Selecciona una opción','class' =>'form-control', 'style'=>'width:50rem','x-bind:required' => 'option === "2" ? true : null']) !!}                    </div>                </div>            </div>        </div>    </div>    <template class="row" x-if="selectedTypeInspection === '1'">        <div class="row">            <div class="input-group col-12 ">                <div class="col-6">                    <strong class="mr-3">Fecha inicial:</strong> <!-- Fecha de inicio -->                    {!! Form::date('initial_date', "2024-07-08", ['class' => 'form-control','max'=>$currentDateTime]) !!}                </div>                <div class="col-6">                    <strong class="mr-3">Fecha final:</strong> <!-- Fecha final -->                    {!! Form::date('final_date', "2024-07-08", ['class' => 'form-control','max'=>$currentDateTime]) !!}                </div>                <span style="font-size:13px">Si se deja vacio, obtiene las inspecciones de hoy</span>            </div>        </div>    </template>    <template class="row" x-if="selectedTypeInspection === '2'">        <div class="row">            <div class="form-group col-10" >                <div class="d-flex flex-row align-items-center justify-content-between">                    <strong class="">Numero de inspecciones:</strong>                    @error('tracksections')                    <small class="text-danger">                        <strong>{{$message}}</strong>                    </small>                    @enderror                    {!! Form::number('inspectionNumber' , null, ['id' => 'inspectionNumber', 'placeholder'=> 'Selecciona numero','class' =>'form-control', 'style'=>'width:50rem']) !!}                </div>            </div>        </div>    </template>    <template class="row" x-if="selectedTypeInspection === '3'">        <span>{{$selectedComponent}}</span>    </template></div>

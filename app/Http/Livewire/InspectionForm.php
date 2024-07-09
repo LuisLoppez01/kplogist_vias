@@ -73,6 +73,7 @@ class InspectionForm extends Component
     {
 
         $currentDateTime = Carbon::now();
+
         /*$currentDateTime = $currentDateTime->setTimezone('UTC');*/
         $user=User::find(auth()->id());
         $yards=$user->yards;

@@ -10,13 +10,15 @@ use App\Models\User;
 use App\Models\RailroadSwitch;
 use App\Models\Inspection;
 use App\Models\Yard;
-
+use Illuminate\Support\Facades\DB;
 class MenuCardTrack extends Component
 {
     public $showModal,$showModal1,$showModal2,$showModal3,$showModal4;
     public $selectedCardYardId,$selectedCardTrackId,$selectedCardTrackSectionId,$type,$selectedInspectionId ;
 
-
+    public $inspectiontracks;
+    public $inspectionrailroadswitchs;
+    public $inspectiontracksections;
     public function mount(){
          $this->showModal = true;
     }
@@ -84,20 +86,52 @@ class MenuCardTrack extends Component
 
          if ($user->getRoleNames()->first() == "Admin" or $user->getRoleNames()->first() == "Coorporativo KP") {
             $yards=Yard::all();
+
             $yards_id=$yards;
         } else {
             $yards = $user->yards;
+
 /*             $yards=Yard::whereIn('id',$yards_id)->pluck('name','id')->toArray();
  */        }
 
         if (!$this->selectedCardYardId) {
             $yardIds = $yards->pluck('id');
+            $this->aa = 456;
             $tracks = Track::whereIn('yard_id', $yardIds)->get();
             $railroadswitches=RailroadSwitch::whereIn('yard_id',$yardIds)->get();
         } else {
+            $this->aa = 123;
             $tracks = Track::where('yard_id', $this->selectedCardYardId)->get();
             $railroadswitches=RailroadSwitch::where('yard_id',$this->selectedCardYardId)->get();
+            //id track, railroadstwitch
+            $tracksId = Track::where('yard_id', $this->selectedCardYardId)->pluck('id')->toArray();
+            $railroadsId = RailroadSwitch::where('yard_id',$this->selectedCardYardId)->pluck('id')->toArray();
+            //consultas
+            $subQuerytrack = Inspection::select('track_id', DB::raw('MAX(date) as latest_date'))
+                ->where('yard_id', $this->selectedCardYardId)
+                ->whereIn('track_id', $tracksId)
+                ->groupBy('track_id');
+            $subQueryrailroad = Inspection::select('railroadswitch_id', DB::raw('MAX(date) as latest_date'))
+                ->where('yard_id', $this->selectedCardYardId)
+                ->whereIn('railroadswitch_id', $railroadsId)
+                ->groupBy('railroadswitch_id');
+
+            $this->inspectiontracks = Inspection::joinSub($subQuerytrack, 'latest_records', function ($join) {
+                $join->on('inspections.track_id', '=', 'latest_records.track_id')
+                    ->on('inspections.date', '=', 'latest_records.latest_date');
+            })
+                ->where('inspections.yard_id', $this->selectedCardYardId)
+                ->whereIn('inspections.track_id', $tracksId)
+                ->get(['inspections.*']);
+            $this->inspectionrailroadswitchs = Inspection::joinSub($subQueryrailroad, 'latest_records', function ($join) {
+                $join->on('inspections.railroadswitch_id', '=', 'latest_records.railroadswitch_id')
+                    ->on('inspections.date', '=', 'latest_records.latest_date');
+            })
+                ->where('inspections.yard_id', $this->selectedCardYardId)
+                ->whereIn('inspections.railroadswitch_id', $railroadsId)
+                ->get(['inspections.*']);
         }
+
         if (!$this->selectedCardTrackId) {
             $trackIds = $tracks->pluck('id');
             $tracksections = TrackSection::whereIn('track_id', $trackIds)->get();
