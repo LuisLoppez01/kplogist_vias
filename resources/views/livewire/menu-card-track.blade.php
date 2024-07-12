@@ -603,7 +603,9 @@
 
                             <div class="card-footer  d-flex justify-content-end ">
 
+{{--
                                 <a href="#" class="btn btn-primary">Descargar cotizacion**</a>
+--}}
 
                             </div>
 

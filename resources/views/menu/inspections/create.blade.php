@@ -16,9 +16,9 @@
                 {!! Form::submit('Guardar inspección', ['class' => 'btn btn-primary mt-2','id'=>'b_save']) !!}
             {!! Form::close() !!}
 
-            {!! Form::open(['route'=> 'menu.enviar-reporte', 'method' => 'POST']) !!}
+{{--            {!! Form::open(['route'=> 'menu.enviar-reporte', 'method' => 'POST']) !!}
                 {!! Form::submit('Enviar reporte', ['class' => 'btn btn-primary mt-2']) !!}
-            {!! Form::close() !!}
+            {!! Form::close() !!}--}}
             </div>
     </div>
 @stop
