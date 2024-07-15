@@ -61,9 +61,9 @@ class TrackReportController extends Controller
                 $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
                     ->whereIn('yard_id', $yards);
 
-                if ($request->condition === '0' || $request->condition === '1') {
+                /*if ($request->condition === '0' || $request->condition === '1') {
                     $generatedInspection->where('condition', $request->condition);
-                }
+                }*/
                 $result = $generatedInspection->get();
             } elseif ($request->option == 1) {
                 if ($request->track_id == 0) {
@@ -71,9 +71,9 @@ class TrackReportController extends Controller
                     $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
                         ->where('yard_id', $request->yard_id)
                         ->whereIn('track_id', $tracks);
-                    if ($request->condition === '0' || $request->condition === '1') {
+                    /*if ($request->condition === '0' || $request->condition === '1') {
                         $generatedInspection->where('condition', $request->condition);
-                    }
+                    }*/
                     $result = $generatedInspection->get();
                 } elseif ($request->tracksection_id == 0) {
                     $tracksections = TrackSection::where('track_id', $request->track_id)->pluck('id')->toArray();
@@ -81,18 +81,18 @@ class TrackReportController extends Controller
                         ->where('yard_id', $request->yard_id)
                         ->where('track_id', $request->track_id)
                         ->whereIn('tracksection_id', $tracksections);
-                    if ($request->condition === '0' || $request->condition === '1') {
+                    /*if ($request->condition === '0' || $request->condition === '1') {
                         $generatedInspection->where('condition', $request->condition);
-                    }
+                    }*/
                     $result = $generatedInspection->get();
                 } else {
                     $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
                         ->where('yard_id', $request->yard_id)
                         ->where('track_id', $request->track_id)
                         ->where('tracksection_id', $request->tracksection_id);
-                    if ($request->condition === '0' || $request->condition === '1') {
+                    /*if ($request->condition === '0' || $request->condition === '1') {
                         $generatedInspection->where('condition', $request->condition);
-                    }
+                    }*/
 
                     $result = $generatedInspection->get();
                 }
@@ -103,24 +103,77 @@ class TrackReportController extends Controller
                     $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
                         ->where('yard_id', $request->yard_id)
                         ->whereIn('railroadswitch_id', $railroadswitches);
-                    if ($request->condition === '0' || $request->condition === '1') {
+                    /*if ($request->condition === '0' || $request->condition === '1') {
                         $generatedInspection->where('condition', $request->condition);
-                    }
+                    }*/
                     $result = $generatedInspection->get();
                 } else {
                     $generatedInspection = Inspection::whereBetween('date', [$request->initial_date . ' 00:00:00', $request->final_date . ' 23:59:59'])
                         ->where('yard_id', $request->yard_id)
                         ->where('railroadswitch_id', $request->railroadswitch_id);
-                    if ($request->condition === '0' || $request->condition === '1') {
+                    /*if ($request->condition === '0' || $request->condition === '1') {
                         $generatedInspection->where('condition', $request->condition);
-                    }
+                    }*/
                     $result = $generatedInspection->get();
                 }
             }
 
         } elseif ($request->type_inspection == 2){
-
-
+            if ($request->yard_id == 0){
+                $user = User::find(auth()->id());
+                $yards = $user->yards;
+                $yards_id = $yards->pluck('id');
+                $yards = Yard::whereIn('id', $yards_id)->pluck('id')->toArray();
+                $latestInspections = Inspection::whereIn('yard_id', $yards)
+                    ->orderBy('date', 'desc')
+                    ->take($request->inspectionNumber)
+                    ->get();
+                $result = $latestInspections;
+            }elseif ($request->option == 1) {
+                if ($request->track_id == 0) {
+                    $tracks = Track::where('yard_id', $request->yard_id)->pluck('id')->toArray();
+                    $latestInspections = Inspection::where('yard_id', $request->yard_id)
+                        ->whereIn('track_id', $tracks)
+                        ->orderBy('date', 'desc')
+                        ->take($request->inspectionNumber)
+                        ->get();
+                    $result = $latestInspections;
+                }elseif ($request->tracksection_id == 0) {
+                    $tracksections = TrackSection::where('track_id', $request->track_id)->pluck('id')->toArray();
+                    $latestInspections = Inspection::where('yard_id', $request->yard_id)
+                        ->where('track_id', $request->track_id)
+                        ->whereIn('tracksection_id', $tracksections)
+                        ->orderBy('date', 'desc')
+                        ->take($request->inspectionNumber)
+                        ->get();
+                    $result = $latestInspections;
+                }else{
+                    $latestInspections = Inspection::where('yard_id', $request->yard_id)
+                        ->where('track_id', $request->track_id)
+                        ->where('tracksection_id', $request->tracksection_id)
+                        ->orderBy('date', 'desc')
+                        ->take($request->inspectionNumber)
+                        ->get();
+                    $result = $latestInspections;
+                }
+            }elseif ($request->option == 2) {
+                if ($request->railroadswitch_id == 0) {
+                    $railroadswitches = RailroadSwitch::where('yard_id', $request->yard_id)->pluck('id')->toArray();
+                    $latestInspections = Inspection::where('yard_id', $request->yard_id)
+                        ->whereIn('railroadswitch_id', $railroadswitches)
+                        ->orderBy('date', 'desc')
+                        ->take($request->inspectionNumber)
+                        ->get();
+                    $result = $latestInspections;
+                }else{
+                    $latestInspections = Inspection::where('yard_id', $request->yard_id)
+                        ->where('railroadswitch_id', $request->railroadswitch_id)
+                        ->orderBy('date', 'desc')
+                        ->take($request->inspectionNumber)
+                        ->get();
+                    $result = $latestInspections;
+                }
+            }
         }elseif ($request->type_inspection == 3){
             if ($request->yard_id == 0) {
                 $user = User::find(auth()->id());
@@ -152,8 +205,8 @@ class TrackReportController extends Controller
                     ->whereIn('inspections.yard_id', $yards)
                     ->whereNotNull('inspections.railroadswitch_id')
                     ->get(['inspections.*']);
-
-                $result = $latestTrackSectionInspections->merge($latestRailroadSwitchInspections);
+                $latestInpsections = $latestTrackSectionInspections->merge($latestRailroadSwitchInspections);
+                $result = $latestInpsections->count() === 1 ? collect($latestInpsections ? [$latestInpsections] : []) : $latestInpsections;
             }elseif ($request->option == 1){
                 if ($request->track_id == 0) {
                     $tracks = Track::where('yard_id', $request->yard_id)->pluck('id')->toArray();
@@ -171,7 +224,8 @@ class TrackReportController extends Controller
                         ->whereIn('inspections.track_id', $tracks)
                         ->whereNotNull('inspections.tracksection_id')
                         ->get(['inspections.*']);
-                    $result = $latestTrackSectionInspections;
+
+                    $result = $latestTrackSectionInspections->count() === 1 ? collect($latestTrackSectionInspections ? [$latestTrackSectionInspections] : []) : $latestTrackSectionInspections;
                 }elseif ($request->tracksection_id == 0) {
                     $tracksections = TrackSection::where('track_id', $request->track_id)->pluck('id')->toArray();
                     $subQueryTrackSection = Inspection::select('tracksection_id', DB::raw('MAX(date) as latest_date'))
@@ -189,7 +243,9 @@ class TrackReportController extends Controller
                         ->where('inspections.track_id', $request->track_id)
                         ->whereIn('inspections.tracksection_id', $tracksections)
                         ->get(['inspections.*']);
-                    $result = $latestTrackSectionInspections;
+
+                    $result = $latestTrackSectionInspections->count() === 1 ? collect($latestTrackSectionInspections ? [$latestTrackSectionInspections] : []) : $latestTrackSectionInspections;
+
                 }else{
                     $subQueryTrackSection = Inspection::select('tracksection_id', DB::raw('MAX(date) as latest_date'))
                         ->where('yard_id', $request->yard_id)
@@ -197,7 +253,6 @@ class TrackReportController extends Controller
                         ->where('tracksection_id', $request->tracksection_id)
                         ->groupBy('tracksection_id');
 
-                    // Obtener la última inspección para el tracksection_id especificado
                     $latestTrackSectionInspection = Inspection::joinSub($subQueryTrackSection, 'latest_tracksection_records', function ($join) {
                         $join->on('inspections.tracksection_id', '=', 'latest_tracksection_records.tracksection_id')
                             ->on('inspections.date', '=', 'latest_tracksection_records.latest_date');
@@ -206,7 +261,8 @@ class TrackReportController extends Controller
                         ->where('inspections.track_id', $request->track_id)
                         ->where('inspections.tracksection_id', $request->tracksection_id)
                         ->first(['inspections.*']);
-                    $result = $latestTrackSectionInspection;
+                    $inspectionCollection = collect($latestTrackSectionInspection ? [$latestTrackSectionInspection] : []);
+                    $result = $inspectionCollection;
                 }
             }elseif ($request->option == 2){
                 if ($request->railroadswitch_id == 0) {
@@ -225,14 +281,13 @@ class TrackReportController extends Controller
                         ->whereIn('inspections.railroadswitch_id', $railroadswitches)
                         ->whereNotNull('inspections.railroadswitch_id')
                         ->get(['inspections.*']);
-                    $result = $latestRailroadSwitchInspections;
+                    $result = $latestRailroadSwitchInspections->count() === 1 ? collect($latestRailroadSwitchInspections ? [$latestRailroadSwitchInspections] : []) : $latestRailroadSwitchInspections;
                 }else{
                     $subQueryRailroadSwitch = Inspection::select('railroadswitch_id', DB::raw('MAX(date) as latest_date'))
                         ->where('yard_id', $request->yard_id)
                         ->where('railroadswitch_id', $request->railroadswitch_id)
                         ->groupBy('railroadswitch_id');
 
-                    // Obtener la última inspección para el railroadswitch_id
                     $latestRailroadSwitchInspections = Inspection::joinSub($subQueryRailroadSwitch, 'latest_railroadswitch_records', function ($join) {
                         $join->on('inspections.railroadswitch_id', '=', 'latest_railroadswitch_records.railroadswitch_id')
                             ->on('inspections.date', '=', 'latest_railroadswitch_records.latest_date');
@@ -240,12 +295,12 @@ class TrackReportController extends Controller
                         ->where('inspections.yard_id', $request->yard_id)
                         ->where('inspections.railroadswitch_id', $request->railroadswitch_id)
                         ->first(['inspections.*']);
-                    $result = $latestRailroadSwitchInspections;
+                    $inspectionCollection = collect($latestRailroadSwitchInspections ? [$latestRailroadSwitchInspections] : []);
+                    $result = $inspectionCollection;
                 }
             }
         }
-/*
-        dump($result);*/
+                /*dump($result);*/
                 $response = Excel::download(new ExportReportToExcel($result), 'datos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
                 ob_end_clean();
                 return $response;
