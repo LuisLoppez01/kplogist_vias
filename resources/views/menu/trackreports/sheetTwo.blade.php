@@ -13,7 +13,9 @@
             <tr>
                 <th>{{$defect->inspection_id}}</th>
                 <th>{{$defect->component_catalog->name}}</th>
-                <th>{{$defect->priority}}</th>
+                <th>
+                    {{ $defect->priority == 3 ? 'Alto' : ($defect->priority == 2 ? 'Medio' : 'Bajo') }}
+                </th>
                 <th>{{$defect->comment}}</th>
             </tr>
         @endforeach

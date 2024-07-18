@@ -30,8 +30,15 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles=Role::all();
-        $companies= Company::pluck('name', 'id')->toArray();
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $companies= Company::pluck('name', 'id')->toArray();
+            $roles=Role::all();
+        }else{
+            $companies= Company::where('id', $user->company_id)
+                ->pluck('name', 'id')->toArray();
+            $roles = Role::all()->skip(2);
+        }
         $route= 'menu.users.create';
         return view('menu.users.create', compact('companies','route', 'roles'));
     }
@@ -84,8 +91,16 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles=Role::all();
-        $companies= Company::pluck('name', 'id')->toArray();
+
+        $currentUser = User::find(auth()->id());
+        if ($currentUser->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $companies= Company::pluck('name', 'id')->toArray();
+            $roles=Role::all();
+        }else{
+            $companies= Company::where('id', $currentUser->company_id)
+                ->pluck('name', 'id')->toArray();
+            $roles = Role::all()->skip(2);
+        }
         $route= 'menu.users.edit';
         return view('menu.users.edit',compact('user','companies', 'route', 'roles'));
     }

@@ -7,7 +7,8 @@ use App\Models\Track;
 use App\Models\Yard;
 use App\Models\ComponentTrack;
 use Illuminate\Http\Request;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 class TrackController extends Controller
 {
     protected $model = Track::class;
@@ -18,28 +19,14 @@ class TrackController extends Controller
      */
     public function index()
     {
-        //$tracks = Track::all();
-        $tracks = Track::paginate(8);
-
-//        $components = ComponentTrack::all()->toArray()->keyBy('id');
-       /*  $components = ComponentTrack::all()->reduce(function ($carry, $item) {
-            $carry[$item->id] = [
-                'id' => $item->id,
-                'type_track' => $item->type_track,
-                'type_tracksleeper_one' => $item->type_tracksleeper_one,
-                'lenght_tracksleeper_one' => $item->lenght_tracksleeper_one,
-                'type_tracksleeper_two' => $item->type_tracksleeper_two,
-                'lenght_tracksleeper_two' => $item->lenght_tracksleeper_two,
-                'weight_rails_one' => $item->weight_rails_one,
-                'lenght_rails_one' => $item->lenght_rails_one,
-                'weight_rails_two' => $item->weight_rails_two,
-                'lenght_rails_two' => $item->lenght_rails_two,
-                /*'railroadswitch_interior' => $item->railroadswitch_interior,
-                'railroadswitch_exterior' => $item->railroadswitch_exterior,
-            ];
-            return $carry;}, []); */
-
-//        dd($components[1]);
+        $user = User::find(auth()->id());
+        $yards = $user->yards->pluck('id')->toArray();
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $tracks = Track::paginate(8);
+        }else{
+            $tracks = Track::whereIn('yard_id', $yards)
+            ->paginate(8);
+        }
         return view('menu.tracks.index', compact('tracks'));
     }
 
@@ -50,7 +37,14 @@ class TrackController extends Controller
      */
     public function create()
     {
-        $yards = Yard::pluck('name', 'id')->toArray();
+
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $yards = Yard::pluck('name', 'id')->toArray();
+        }else{
+            /*$yards = Yard::pluck('name', 'id')->toArray();*/
+            $yards = $user->yards->pluck('name','id')->toArray();
+        }
         $route = 'create';
         return view('menu.tracks.create', compact('yards', 'route'));
     }
@@ -119,7 +113,13 @@ class TrackController extends Controller
     public function edit(Track $track)
     {
         $route = 'edit';
-        $yards = Yard::pluck('name', 'id')->toArray();
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $yards = Yard::pluck('name', 'id')->toArray();
+        }else{
+            /*$yards = Yard::pluck('name', 'id')->toArray();*/
+            $yards = $user->yards->pluck('name','id')->toArray();
+        }
         $components = ComponentTrack::select('id', 'type_track', 'lenght_tracksleeper_one', 'lenght_tracksleeper_two',
             'type_tracksleeper_one', 'type_tracksleeper_two', 'weight_rails_one', 'lenght_rails_one', 'weight_rails_two', 'lenght_rails_two',
             /*'railroadswitch_interior', 'railroadswitch_exterior'*/)

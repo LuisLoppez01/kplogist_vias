@@ -3,12 +3,14 @@
 namespace App\Http\Middleware;
 
 use App\Models\CardTrack;
+use App\Models\Company;
 use App\Models\Inspection;
 use App\Models\TrackReport;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use ReflectionClass;
+use Spatie\Permission\Models\Role;
 
 
 class RedirectUnauthorized
@@ -38,16 +40,17 @@ class RedirectUnauthorized
         $modelProperty->setAccessible(true);
         $model = $modelProperty->getValue($controllerInstance);
 
-        if ($user->hasAnyRole(['Admin', 'CorporativoKP', 'Coordinador'])) {
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
             return $next($request);
-        } elseif ($user->hasRole('Supervisor') && (app($model) instanceof Inspection || app($model) instanceof CardTrack || app($model) instanceof TrackReport)) {
+        }elseif ($user->hasRole('Coordinador') && !(app($model) instanceof Company || app($model) instanceof Role)){
             return $next($request);
-        } elseif ($user->hasRole('InspectorKP') && app($model) instanceof Inspection) {
+        }elseif ($user->hasRole('Supervisor') && (app($model) instanceof Inspection || app($model) instanceof CardTrack || app($model) instanceof TrackReport)) {
+            return $next($request);
+        } elseif ($user->hasRole('InspectorKP') && app($model) instanceof Inspection || app($model) instanceof CardTrack) {
             return $next($request);
         } else {
             return redirect('/menu')->with('error', 'No tienes permisos para acceder a este recurso.');
         }
-
 
     }
 }

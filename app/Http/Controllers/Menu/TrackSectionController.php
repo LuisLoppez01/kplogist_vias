@@ -7,6 +7,7 @@ use App\Models\TrackSection;
 use App\Models\Track;
 use Illuminate\Http\Request;
 use Livewire\WithPagination;
+use App\Models\User;
 class TrackSectionController extends Controller
 {
     protected $model = TrackSection::class;
@@ -19,7 +20,16 @@ class TrackSectionController extends Controller
      */
     public function index()
     {
-        $tracksections = TrackSection::paginate(8);
+        $user = User::find(auth()->id());
+        $yards = $user->yards->pluck('id')->toArray();
+        $tracks = Track::whereIn('yard_id', $yards)
+            ->pluck('id')->toArray();
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $tracksections = TrackSection::paginate(8);
+        }else{
+            $tracksections = TrackSection::whereIn('track_id', $tracks)
+                ->paginate(8);
+        }
         return view('menu.tracksections.index',compact('tracksections'));
     }
 
@@ -30,7 +40,17 @@ class TrackSectionController extends Controller
      */
     public function create()
     {
-        $tracks=Track::pluck('name','id')->toArray();
+
+        $user = User::find(auth()->id());
+        $yards = $user->yards->pluck('id')->toArray();
+
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $tracks=Track::pluck('name','id')->toArray();
+        }else{
+            $tracks = Track::whereIn('yard_id', $yards)
+                ->pluck('name','id')->toArray();
+        }
+
         return view('menu.tracksections.create',compact('tracks'));
     }
 
@@ -75,7 +95,15 @@ class TrackSectionController extends Controller
      */
     public function edit(TrackSection $tracksection)
     {
-        $tracks=Track::pluck('name','id')->toArray();
+        $user = User::find(auth()->id());
+        $yards = $user->yards->pluck('id')->toArray();
+
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $tracks=Track::pluck('name','id')->toArray();
+        }else{
+            $tracks = Track::whereIn('yard_id', $yards)
+                ->pluck('name','id')->toArray();
+        }
         return view('menu.tracksections.edit',compact('tracksection','tracks'));
     }
 

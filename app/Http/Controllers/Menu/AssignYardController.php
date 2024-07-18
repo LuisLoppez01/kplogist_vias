@@ -19,8 +19,13 @@ class AssignYardController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(8);
-
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $users = User::paginate(8);
+        }else{
+            $users = User::where('company_id', $user->company_id)
+                ->paginate(8);
+        }
         return view('menu.assignyards.index', compact('users'));
     }
 

@@ -19,7 +19,14 @@ class YardController extends Controller
      */
     public function index()
     {
-        $yards = Yard::withCount('tracks')->paginate(8);
+
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $yards = Yard::withCount('tracks')->paginate(8);
+        }else{
+            $yards = Yard::where('company_id', $user->company_id)
+            ->withCount('tracks')->paginate(8);
+        }
         return view('menu.yards.index', compact('yards'));
     }
 
@@ -31,7 +38,15 @@ class YardController extends Controller
     public function create()
     {
         $locations = Location::pluck('name', 'id')->toArray();
-        $companies = Company::pluck('name', 'id')->toArray();
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $companies= Company::pluck('name', 'id')->toArray();
+
+        }else{
+            $companies= Company::where('id', $user->company_id)
+                ->pluck('name', 'id')->toArray();
+
+        }
         return view('menu.yards.create', compact('locations', 'companies'));
     }
 
@@ -79,7 +94,15 @@ class YardController extends Controller
     public function edit(Yard $yard)
     {
         $locations = Location::pluck('name', 'id')->toArray();
-        $companies = Company::pluck('name', 'id')->toArray();
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $companies= Company::pluck('name', 'id')->toArray();
+
+        }else{
+            $companies= Company::where('id', $user->company_id)
+                ->pluck('name', 'id')->toArray();
+
+        }
         return view('menu.yards.edit', compact('yard', 'locations', 'companies'));
     }
 
