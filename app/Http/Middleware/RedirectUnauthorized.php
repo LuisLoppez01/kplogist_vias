@@ -42,7 +42,7 @@ class RedirectUnauthorized
 
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
             return $next($request);
-        }elseif ($user->hasRole('Coordinador') && !(app($model) instanceof Company || app($model) instanceof Role)){
+        }elseif ($user->hasRole('Coordinador') && (app($model) instanceof TrackReport || app($model) instanceof CardTrack)){
             return $next($request);
         }elseif ($user->hasRole('Supervisor') && (app($model) instanceof Inspection || app($model) instanceof CardTrack || app($model) instanceof TrackReport)) {
             return $next($request);

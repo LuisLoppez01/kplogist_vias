@@ -89,18 +89,18 @@ class MenuCardTrack extends Component
 
             $yards_id=$yards;
         } else {
-            $yards = $user->yards;
+            $yards = $user->yards()->orderBy('id','asc')->get();
 
 /*             $yards=Yard::whereIn('id',$yards_id)->pluck('name','id')->toArray();
  */        }
-
+        /*dd($yards);*/
         if (!$this->selectedCardYardId) {
             $yardIds = $yards->pluck('id');
-            $this->aa = 456;
+
             $tracks = Track::whereIn('yard_id', $yardIds)->get();
             $railroadswitches=RailroadSwitch::whereIn('yard_id',$yardIds)->get();
         } else {
-            $this->aa = 123;
+
             $tracks = Track::where('yard_id', $this->selectedCardYardId)->get();
             $railroadswitches=RailroadSwitch::where('yard_id',$this->selectedCardYardId)->get();
             //id track, railroadstwitch
@@ -173,6 +173,7 @@ class MenuCardTrack extends Component
                 $merge_tracksections[] = $array;
             }
         } */
+
         $priorityOptions = [
             1 => 'Baja',
             2 => 'Media',

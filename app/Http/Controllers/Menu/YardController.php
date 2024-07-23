@@ -22,7 +22,9 @@ class YardController extends Controller
 
         $user = User::find(auth()->id());
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
-            $yards = Yard::withCount('tracks')->paginate(8);
+            /*$yards = Yard::withCount('tracks')->paginate(8);*/
+            $yards = $user->yards()->withCount('tracks')->orderBy('id', 'asc')->paginate(8);
+            /*dump($yardss, $yards);*/
         }else{
             $yards = Yard::where('company_id', $user->company_id)
             ->withCount('tracks')->paginate(8);
@@ -62,14 +64,20 @@ class YardController extends Controller
             'name' => 'required',
 
         ]);
-        $users = User::where('name', 'Administrador')->first();
+/*        $users = User::where('name', 'Administrador')->first();*/
+        $relationUser = User::whereHas('roles', function($query) {
+            $query->whereIn('name', ['Admin', 'CorporativoKP']);
+        })->with('roles')->get();
         $yard = Yard::create([
             'name' => $request->name,
             'location_id' => $request->location_id,
             'company_id' => $request->company_id
 
         ]);
-        $yard->users()->attach($users->id);
+        /*dump($relationUser);*/
+        foreach ($relationUser as $user) {
+            $yard->users()->attach($user->id);
+        }
         return redirect()->route('menu.yards.index')->with('info', 'Se registró el patio correctamente');
     }
 
