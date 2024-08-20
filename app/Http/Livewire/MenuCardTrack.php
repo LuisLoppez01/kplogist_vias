@@ -19,14 +19,18 @@ class MenuCardTrack extends Component
     public $inspectiontracks;
     public $inspectionrailroadswitchs;
     public $inspectiontracksections;
+
+
     public function mount(){
          $this->showModal = true;
+
     }
     public function openModal1($YardId)
     {
         $this->selectedCardYardId = $YardId;
         $this->showModal = false;
         $this->showModal1 = true;
+
     }
     public function openModal2($TrackId)
     {
@@ -179,9 +183,9 @@ class MenuCardTrack extends Component
             2 => 'Media',
             3 => 'Alta',
         ];
+
         return view('livewire.menu-card-track', compact('yards','tracks','tracksections','user',
         'railroadswitches','inspections','selectedInspection','defects','priorityOptions'));
-       // return view('livewire.menu-card-track', compact('merge_tracks','merge_tracksections', 'tracks'));
     }
 
 }

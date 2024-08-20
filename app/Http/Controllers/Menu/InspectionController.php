@@ -38,7 +38,6 @@ class InspectionController extends Controller
         $user = Auth::user();
         $yardIds = Yard::where('company_id', $user->company_id)->pluck('id');
 
-        //dd($user->yards->pluck('id'),$yardIds);
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
             $inspections = Inspection::paginate(8);
         }elseif($user->hasRole('Coordinador')){
@@ -47,9 +46,12 @@ class InspectionController extends Controller
             //dd($yardIds,$inspections);
         }elseif($user->hasRole('Supervisor')){
             $inspections = Inspection::whereIn('yard_id', $user->yards->pluck('id'))->paginate(8);
-        }elseif($user->hasRole('InspectorKP')){
-            $inspections = $user->inspections()->paginate(8);
         }
+
+
+        /*elseif($user->hasRole('InspectorKP')){
+            $inspections = $user->inspections()->paginate(8);
+        }*/
         return view('menu.inspections.index', compact('inspections'));
     }
 
@@ -76,6 +78,15 @@ class InspectionController extends Controller
         //return $request;
 
         if ($request->type_inspection == 1) {
+            $lastInspection = Inspection::where('yard_id', $request->yard_id)
+                ->where('track_id', $request->track_id)
+                ->where('tracksection_id', $request->tracksection_id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if ($lastInspection !== null){
+                $lastInspection->active = 3;
+                $lastInspection->save();
+            }
             $inspection = Inspection::create([
                 'user_id' => auth()->id(),
                 'yard_id' => $request->yard_id,
@@ -85,9 +96,18 @@ class InspectionController extends Controller
                 'date' => $request->date,
                 'type_inspection' => $request->type_inspection,
                 'condition' => $request->condition,
+                'active' => 1
             ]);
         }
         if ($request->type_inspection == 2) {
+            $lastInspection = Inspection::where('yard_id', $request->yard_id)
+                ->where('railroadswitch_id', $request->railroadswitch_id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if ($lastInspection !== null){
+                $lastInspection->active = 3;
+                $lastInspection->save();
+            }
             $inspection = Inspection::create([
                 'user_id' => auth()->id(),
                 'yard_id' => $request->yard_id,
@@ -97,9 +117,10 @@ class InspectionController extends Controller
                 'date' => $request->date,
                 'type_inspection' => $request->type_inspection,
                 'condition' => $request->condition,
+                'active' => 1
             ]);
         }
-        if ($request->condition == 1) {
+        /*if ($request->condition == 1) {
             $count = count($request->defecto);
             for ($i = 0; $i < $count; $i++) {
                 $inspection->defect_track()->create([
@@ -121,7 +142,7 @@ class InspectionController extends Controller
             ]);
 //{!! asset('img/kp_tracks.jpg') !!}
         }
-
+*/
         return redirect()->route('menu.inspections.create')->with('info', 'Se registró  satifactoriamente');
 
     }
