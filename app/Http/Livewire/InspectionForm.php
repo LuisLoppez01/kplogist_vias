@@ -91,9 +91,9 @@ class InspectionForm extends Component
         if (!$this->selectedYard) {
             $tracks=Track::whereIn('yard_id',$yards_id)->pluck('name','id')->toArray();
             $railroadswitches=RailroadSwitch::whereIn('yard_id',$yards_id)->pluck('name','id')->toArray();
-
         } else {
             $tracks=Track::track($this->selectedYard)->pluck('name','id')->toArray();
+            dump('2');
             $railroadswitches=RailroadSwitch::switch($this->selectedYard)->pluck('name','id')->toArray();
         }
 
@@ -106,7 +106,6 @@ class InspectionForm extends Component
 
         $components=ComponentCatalog::component($this->selectedComponent)->pluck('name','id')->toArray();
         $this->selectedDefect = $components;
-
         return view('livewire.inspection-form',compact('yards','tracks','tracksections','railroadswitches','components','user','currentDateTime'))->with('info','Se guardo la inspeccion correctamente');;
 
     }

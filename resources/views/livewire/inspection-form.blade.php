@@ -63,7 +63,7 @@
                 <strong>{{$message}}</strong>
             </small>
             @enderror
-            {!! Form::select('track_id', $tracks=['0' => 'Selecciona una opción'] + $tracks, '0', ['id' => 'track_id','class' => 'form-control','wire:model' => 'selectedTrack']) !!}
+            {!! Form::select('track_id', ['0' => 'Selecciona una opción'] + $tracks, '0', ['id' => 'track_id','class' => 'form-control','wire:model' => 'selectedTrack']) !!}
         </div>
         <div class="form-group col-12 col-sm-4" x-show="selectedOption === '1'">
             <strong>Tramos</strong>

@@ -1,34 +1,1 @@
-@extends('adminlte::page')
-
-@section('title', 'FFCC')
-
-@section('content_header')
-    <h1>Editar vía</h1>
-@stop
-
-@section('content')
-    @if (session('info'))
-            <div class="alert alert-success" role="alert">
-                <strong>Éxito!</strong> {{session('info')}}
-            </div>
-        @endif
-    <div class="card">
-        <div class="card-body">
-
-            {!! Form::model($track,['route'=> ['menu.tracks.update',$track], 'method' => 'put']) !!}
-                @include('menu.tracks.partials.form')
-
-                {!! Form::submit('Actualizar vía', ['class' => 'btn btn-primary mt-2']) !!}
-
-            {!! Form::close() !!}
-        </div>
-    </div>
-@stop
-
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
-
-@section('js')
-    <script> console.log('Hi!'); </script>
-@stop
+@extends('adminlte::page')@section('title', 'FFCC')@section('content_header')    <h1>Editar vía</h1>@stop@section('content')    @if (session('info'))            <div class="alert alert-success" role="alert">                <strong>Éxito!</strong> {{session('info')}}            </div>        @endif    <div class="card">        <div class="card-body">            {!! Form::model($track,['route'=> ['menu.tracks.update',$track], 'method' => 'put']) !!}{{--                @include('menu.tracks.partials.form')--}}            @livewire('track-form', ['companies' => $companies,'companies_id' => $companies_id, 'route' => $route, 'track' => $track, 'components'=>$components])                {!! Form::submit('Actualizar vía', ['class' => 'btn btn-primary mt-2']) !!}            {!! Form::close() !!}        </div>    </div>@stop@section('css')    <link rel="stylesheet" href="/css/admin_custom.css">@stop@section('js')    <script> console.log('Hi!'); </script>@stop

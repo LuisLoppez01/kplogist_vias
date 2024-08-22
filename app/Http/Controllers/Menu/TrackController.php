@@ -8,6 +8,7 @@ use App\Models\Yard;
 use App\Models\ComponentTrack;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 class TrackController extends Controller
 {
@@ -40,13 +41,15 @@ class TrackController extends Controller
 
         $user = User::find(auth()->id());
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
-            $yards = Yard::pluck('name', 'id')->toArray();
+            $companies = Company::pluck('name', 'id')->toArray();
+            $companies_id = Company::pluck('id')->toArray();
         }else{
-            /*$yards = Yard::pluck('name', 'id')->toArray();*/
-            $yards = $user->yards->pluck('name','id')->toArray();
+            $companies = $user->company->pluck('name','id')->toArray();
+            $companies_id = $user->company->pluck('id')->toArray();
         }
+
         $route = 'create';
-        return view('menu.tracks.create', compact('yards', 'route'));
+        return view('menu.tracks.create', compact('companies','companies_id', 'route'));
     }
 
     /**
@@ -112,21 +115,22 @@ class TrackController extends Controller
      */
     public function edit(Track $track)
     {
+
         $route = 'edit';
         $user = User::find(auth()->id());
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
-            $yards = Yard::pluck('name', 'id')->toArray();
+            $companies = Company::pluck('name', 'id')->toArray();
+            $companies_id = Company::pluck('id')->toArray();
         }else{
-            /*$yards = Yard::pluck('name', 'id')->toArray();*/
-            $yards = $user->yards->pluck('name','id')->toArray();
+            $companies = $user->company->pluck('name','id')->toArray();
+            $companies_id = $user->company->pluck('id')->toArray();
         }
         $components = ComponentTrack::select('id', 'type_track', 'lenght_tracksleeper_one', 'lenght_tracksleeper_two',
             'type_tracksleeper_one', 'type_tracksleeper_two', 'weight_rails_one', 'lenght_rails_one', 'weight_rails_two', 'lenght_rails_two',
             /*'railroadswitch_interior', 'railroadswitch_exterior'*/)
             ->wheretrack_id($track->id)
             ->first();
-//        dd($components);
-        return view('menu.tracks.edit', compact('track', 'yards', 'components', 'route'));
+        return view('menu.tracks.edit', compact('track', 'companies','companies_id', 'components', 'route'));
     }
 
     /**
