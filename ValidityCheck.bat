@@ -1,2 +1,2 @@
 @echo
-php artisan schedule:work
+php artisan schedule:run

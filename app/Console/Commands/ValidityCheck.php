@@ -41,10 +41,10 @@ class ValidityCheck extends Command
 
             if ($inspectionDate->diffInMonths($currentDate) >= 6) {
 
-                /*$text = "ID: " . $inspection->id . ", Fecha: " . $inspection->date . ", Activo: " . $inspection->active . "\n";
+               /* $text = "ID: " . $inspection->id . ", Fecha: " . $inspection->date . ", Activo: " . $inspection->active . "\n";
                 Storage::append("test.txt", $text);*/
-                $inspection->active = 2;
-                $inspection->save();
+//                $inspection->active = 2;
+//                $inspection->save();
             }
         }
         $text = "[" . date("y-m-d H:i:s") ."]: ValidityCheck";
