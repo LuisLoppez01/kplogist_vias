@@ -93,7 +93,6 @@ class InspectionForm extends Component
             $railroadswitches=RailroadSwitch::whereIn('yard_id',$yards_id)->pluck('name','id')->toArray();
         } else {
             $tracks=Track::track($this->selectedYard)->pluck('name','id')->toArray();
-            dump('2');
             $railroadswitches=RailroadSwitch::switch($this->selectedYard)->pluck('name','id')->toArray();
         }
 

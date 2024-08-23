@@ -8,6 +8,7 @@ use App\Models\Track;
 use Illuminate\Http\Request;
 use Livewire\WithPagination;
 use App\Models\User;
+use App\Models\Company;
 class TrackSectionController extends Controller
 {
     protected $model = TrackSection::class;
@@ -42,16 +43,15 @@ class TrackSectionController extends Controller
     {
 
         $user = User::find(auth()->id());
-        $yards = $user->yards->pluck('id')->toArray();
-
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
-            $tracks=Track::pluck('name','id')->toArray();
+            $companies = Company::pluck('name', 'id')->toArray();
+            $companies_id = Company::pluck('id')->toArray();
         }else{
-            $tracks = Track::whereIn('yard_id', $yards)
-                ->pluck('name','id')->toArray();
+            $companies = $user->company->pluck('name','id')->toArray();
+            $companies_id = $user->company->pluck('id')->toArray();
         }
 
-        return view('menu.tracksections.create',compact('tracks'));
+        return view('menu.tracksections.create',compact('companies','companies_id'));
     }
 
     /**
@@ -99,12 +99,13 @@ class TrackSectionController extends Controller
         $yards = $user->yards->pluck('id')->toArray();
 
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
-            $tracks=Track::pluck('name','id')->toArray();
+            $companies = Company::pluck('name', 'id')->toArray();
+            $companies_id = Company::pluck('id')->toArray();
         }else{
-            $tracks = Track::whereIn('yard_id', $yards)
-                ->pluck('name','id')->toArray();
+            $companies = $user->company->pluck('name','id')->toArray();
+            $companies_id = $user->company->pluck('id')->toArray();
         }
-        return view('menu.tracksections.edit',compact('tracksection','tracks'));
+        return view('menu.tracksections.edit',compact('companies','companies_id', 'tracksection'));
     }
 
     /**

@@ -38,7 +38,6 @@
         </small>
         @enderror
         {!! Form::select('yard_id', [0 => 'Seleccione una opción'] + $yards, $selectedYard, ['class' => 'form-control', 'wire:model' => 'selectedYard']) !!}
-
     </div>
 
     @if($route === 'create')
