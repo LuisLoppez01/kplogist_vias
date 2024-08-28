@@ -120,7 +120,7 @@ class InspectionController extends Controller
                 'active' => 1
             ]);
         }
-        /*if ($request->condition == 1) {
+        if ($request->condition == 1) {
             $count = count($request->defecto);
             for ($i = 0; $i < $count; $i++) {
                 $inspection->defect_track()->create([
@@ -142,7 +142,7 @@ class InspectionController extends Controller
             ]);
 //{!! asset('img/kp_tracks.jpg') !!}
         }
-*/
+
         return redirect()->route('menu.inspections.create')->with('info', 'Se registró  satifactoriamente');
 
     }

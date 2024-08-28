@@ -30,6 +30,7 @@
         @enderror
         {!! Form::select('companies_id',[0=>'Seleccione una opción'] + $companies, $selectedCompany, ['class' => 'form-control','wire:model' => 'selectedCompany']) !!}
     </div>
+
     <div class="form-group">
         <strong>Patio</strong>
         @error('locations')

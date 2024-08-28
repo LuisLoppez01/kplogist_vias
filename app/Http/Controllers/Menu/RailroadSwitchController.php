@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\User;
 use App\Models\Yard;
 use App\Models\RailroadSwitch;
 use Illuminate\Http\Request;
@@ -29,7 +31,15 @@ class RailroadSwitchController extends Controller
     public function create()
     {
         $yards=Yard::pluck('name','id')->toArray();
-        return view('menu.railroadswitches.create',compact('yards'));
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $companies = Company::pluck('name', 'id')->toArray();
+            $companies_id = Company::pluck('id')->toArray();
+        }else{
+            $companies = $user->company->pluck('name','id')->toArray();
+            $companies_id = $user->company->pluck('id')->toArray();
+        }
+        return view('menu.railroadswitches.create',compact('companies','companies_id' ));
     }
 
     /**
@@ -75,7 +85,15 @@ class RailroadSwitchController extends Controller
     public function edit(RailroadSwitch $railroadswitch)
     {
         $yards=Yard::pluck('name','id')->toArray();
-        return view('menu.railroadswitches.edit',compact('railroadswitch','yards'));
+        $user = User::find(auth()->id());
+        if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
+            $companies = Company::pluck('name', 'id')->toArray();
+            $companies_id = Company::pluck('id')->toArray();
+        }else{
+            $companies = $user->company->pluck('name','id')->toArray();
+            $companies_id = $user->company->pluck('id')->toArray();
+        }
+        return view('menu.railroadswitches.edit',compact('railroadswitch','companies','companies_id' ));
     }
 
     /**
