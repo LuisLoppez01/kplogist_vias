@@ -25,7 +25,9 @@
                     <h5 class="card-title">Vias</h5>
                 </div>
                 <div class="row">
-
+                    @php
+                        $alignedArray = [];
+                    @endphp
                     @foreach ($tracks as $index => $track)
                         @php
                             $condition = ''; // Establecemos el valor predeterminado a 'bg-success'
@@ -33,12 +35,14 @@
                         @php
                                 $inspectionModel = new \App\Models\Inspection();
                                 $condition = $inspectionModel->getTrackVerification($track,$condition);
-                        @endphp
+                                $match = $this->inspectiontracks->firstWhere('track_id', $track->id);
+                                $alignedArray[] = $match ? $match : null;
+                                @endphp
                         <div class="col-md-4 col-sm-6">
                             <div class="btn {{ $condition }} btn-block mt-2"
                                  wire:click='openModal2("{{ $track->id }}")'>
                                 <div class="profile-id">
-                                    <span>Ultima inspección: {{isset($inspectiontracks[$index]) ? $inspectiontracks[$index]->date: 'No hay registro'}}</span>
+                                    <span>Ultima inspección: {{isset($alignedArray[$index]) ? $alignedArray[$index]->date: 'No hay registro'}}</span>
                                 </div>
                                 <div class="profile-name"><span>{{ $track->name }}</span></div>
                                 <div class="profile-username"><span>{{ $track->yard->name }}</span></div>
@@ -50,6 +54,9 @@
                     <h5 class="card-title mt-3">Herrajes</h5>
                 </div>
                 <div class="row">
+                    @php
+                        $alignedArray = [];
+                    @endphp
                     @foreach ($railroadswitches as $index => $railroadswitch)
                         @php
                             $condition = ''; // Establecemos el valor predeterminado a 'bg-success'
@@ -57,14 +64,16 @@
                         @php
                             $inspectionModel = new \App\Models\Inspection();
                             $condition = $inspectionModel->getRailraoadSwtichVerification($railroadswitch);;
+                            $match = $this->inspectionrailroadswitchs->firstWhere('railroadswitch_id', $railroadswitch->id);
+                            $alignedArray[] = $match ? $match : null;
                         @endphp
-
+{{--                        @dump($match)--}}
                         <div class="col-md-4 col-sm-6">
                             <div class="btn {{ $condition }} btn-block mt-2"
                                  wire:click="openModal3({{ $railroadswitch->id }},'switch')">
 
                                 <div class="profile-id">
-                                    <span>Ultima inspección: {{isset($inspectionrailroadswitchs[$index]) ? $inspectionrailroadswitchs[$index]->date: 'No hay registro'}}</span>
+                                    <span>Ultima inspección: {{isset($alignedArray[$index]) ? $alignedArray[$index]->date: 'No hay registro'}}</span>
                                 </div>
                                 <div class="profile-name"><span>{{ $railroadswitch->name }}</span></div>
                                 <div class="profile-username"><span>{{ $railroadswitch->yard->name }}</span></div>
@@ -278,7 +287,7 @@
                                                     <!-- Agrega aquí los elementos select y el campo de comments -->
                                                     <div class="form-group col-12 col-sm-4">
                                                         <label class="etiqueta-movil" for="defect">Defectos</label>
-                                                        {{ Form::text('defect', $defect->component_catalog->name, ['class' => 'form-control', 'readonly' => true]) }}
+                                                        {{ Form::text('defect', is_null($defect->component_catalogs_id)?"No se agregó componente":$defect->component_catalog->name, ['class' => 'form-control', 'readonly' => true]) }}
                                                     </div>
                                                     <div class="form-group col-12 col-sm-4">
                                                         <label class="etiqueta-movil" for="priority">Prioridad</label>
@@ -287,7 +296,7 @@
                                                     <div class="form-group col-12 col-sm-4">
                                                         <label class="etiqueta-movil"
                                                                for="defect">Comentario</label>
-                                                        {{ Form::text('comment', $defect->comment, ['class' => 'form-control', 'readonly' => true]) }}
+                                                        {{ Form::text('comment', is_null($defect->comment)?"No se agregó comentario":$defect->comment, ['class' => 'form-control', 'readonly' => true]) }}
                                                     </div>
                                                 </div>
                                             @endforeach

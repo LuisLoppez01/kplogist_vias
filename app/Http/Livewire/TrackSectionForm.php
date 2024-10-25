@@ -18,7 +18,7 @@ class TrackSectionForm extends Component
             $this->company = $this->tracksection->track->yard->company->id;
             $this->selectedCompany = $this->company;
             $this->selectedYard = $this->tracksection->track->yard->id;
-            
+            $this->selectedTrack = $this->tracksection->track->id;
         }
         if (!$this->selectedCompany) {
             $this->yards=Yard::whereIn('company_id',$this->companies)->pluck('name','id')->toArray();
@@ -31,6 +31,7 @@ class TrackSectionForm extends Component
         }else{
             $this->tracks=Track::track($this->selectedYard)->pluck('name','id')->toArray();
         }
+//        dump($this->tracksection);
         return view('livewire.track-section-form', [
             'companies' => $this->companies,
             'yards' => $this->yards,

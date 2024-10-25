@@ -76,7 +76,17 @@ class InspectionController extends Controller
     {
 
         //return $request;
-
+        if ($request->condition == 1) {
+            $request->validate([
+                'defecto.*' => 'required',
+                'priorities.*' => 'required',
+                'comments.*' => 'required|string|max:255',
+            ], [
+                'defecto.*.required' => 'Por favor, seleccione un defecto.',
+                'priorities.*.required' => 'Por favor, seleccione una prioridad.',
+                'comments.*.required' => 'Por favor, rellene el comentario.',
+            ]);
+        }
         if ($request->type_inspection == 1) {
             $lastInspection = Inspection::where('yard_id', $request->yard_id)
                 ->where('track_id', $request->track_id)
@@ -140,11 +150,8 @@ class InspectionController extends Controller
             $inspection->image()->create([
                 'url' => $route
             ]);
-//{!! asset('img/kp_tracks.jpg') !!}
         }
-
-        return redirect()->route('menu.inspections.create')->with('info', 'Se registró  satifactoriamente');
-
+        return back()->withInput()->with('info', 'Se registró satisfactoriamente');
     }
 
     /**
