@@ -1,12 +1,12 @@
 @php
     $nav_links=[
         [
-            'name'=>'Inicio',
+            'name'=>'Home',
             'route'=>'/',
             'active'=>request()->routeIs('Home')
         ],
         [
-            'name'=>'Menú',
+            'name'=>'Menu',
             'route'=>'menu',
             'active'=>request()->routeIs('Menu')
         ],
@@ -115,11 +115,11 @@
                         <x-slot name="content">
                             <!-- Account Management -->
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Administrar cuenta') }}
+                                {{ __('Manage Account') }}
                             </div>
 
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
-                                {{ __('Perfil') }}
+                                {{ __('Profile') }}
                             </x-jet-dropdown-link>
                             <x-jet-dropdown-link href="{{ route('menu.home') }}">
                                 Menu
@@ -139,14 +139,14 @@
 
                                 <x-jet-dropdown-link href="{{ route('logout') }}"
                                          @click.prevent="$root.submit();">
-                                    {{ __('Cerrar sesión') }}
+                                    {{ __('Log Out') }}
                                 </x-jet-dropdown-link>
                             </form>
                         </x-slot>
                     </x-jet-dropdown>
                     @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Iniciar sesión</a>
-                     {{--<a href="{{ route('register') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Registrarse</a>--}}
+                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Login</a>
+                     {{--<a href="{{ route('register') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Register</a>--}}
                     @endauth
                 </div>
             </div>
@@ -194,10 +194,10 @@
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
                 <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
-                    {{ __('Perfil') }}
+                    {{ __('Profile') }}
                 </x-jet-responsive-nav-link>
                 <x-jet-responsive-nav-link href="{{ route('menu.home') }}" :active="request()->routeIs('menu.home')">
-                    'Menu'
+                    Menu
                 </x-jet-responsive-nav-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
@@ -212,7 +212,7 @@
 
                     <x-jet-responsive-nav-link href="{{ route('logout') }}"
                                    @click.prevent="$root.submit();">
-                        {{ __('Cerrar sesión') }}
+                        {{ __('Log Out') }}
                     </x-jet-responsive-nav-link>
                 </form>
 
@@ -251,11 +251,11 @@
         @else
             <div class="py-1 border-t border-gray-200">
                 <x-jet-responsive-nav-link href="{{ route('login') }}" :active="request()->routeIs('login')">
-                    Inicias sesión
+                    Login
                 </x-jet-responsive-nav-link>
 
                {{--  <x-jet-responsive-nav-link href="{{ route('register') }}" :active="request()->routeIs('register')">
-                    Registrarse
+                    Register
                 </x-jet-responsive-nav-link> --}}
 
             </div>
