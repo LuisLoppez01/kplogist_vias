@@ -12,11 +12,11 @@
         @foreach($report->defect_track as $defect)
             <tr>
                 <th>{{$defect->inspection_id}}</th>
-                <th>{{$defect->component_catalog->name}}</th>
+                <th>{{is_null($defect->component_catalogs_id)?"No se agregó componente":$defect->component_catalog->name,}}</th>
                 <th>
-                    {{ $defect->priority == 3 ? 'Alto' : ($defect->priority == 2 ? 'Medio' : 'Bajo') }}
+                    {{ is_null($defect->priority) || $defect->priority == 0? "No se agregó prioridad" : ($defect->priority == 3 ? 'Alto' : ($defect->priority == 2 ? 'Medio' : 'Bajo')) }}
                 </th>
-                <th>{{$defect->comment}}</th>
+                <th>{{is_null($defect->comment)?"No se agregó comentario":$defect->comment}}</th>
             </tr>
         @endforeach
     @endforeach

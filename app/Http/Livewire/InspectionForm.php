@@ -28,23 +28,44 @@ class InspectionForm extends Component
 
 {
 
-    public $selectedYard , $selectedTrack , $selectedComponent='1';
+    public $selectedYard , $selectedTrack , $selectedComponent;
 
     public $selectedDefect;
 
     public $conjuntos;
 
-
+    public $selectedRR, $selectedTS;
 
     public function mount()
 
     {
+        $this->selectedYard = old('yard_id',"");
+        $this->selectedTrack = old('track_id',"");
+        $this->selectedRR = old('railroadswitch_id',"");
+        $this->selectedTS = old('tracksection_id',"");
+        $this->selectedComponent = old('type_inspection', "2");
+        $defectos = old('defecto', []);
 
-        $this->conjuntos = [
 
-            ['defecto' => '', 'priorities' => '', 'comments' => '']
+        if (count($defectos) <= 1) {
+            $this->conjuntos = [
+                [
+                    'defecto' => $defectos[0] ?? '',
+                    'priorities' => old('priorities')[0] ?? '',
+                    'comments' => old('comments')[0] ?? ''
+                ]
+            ];
+        } else {
 
-        ];
+            $this->conjuntos = [];
+            foreach ($defectos as $index => $defecto) {
+                $this->conjuntos[] = [
+                    'defecto' => old('defecto')[$index] ?? '',
+                    'priorities' => old('priorities')[$index] ?? '',
+                    'comments' => old('comments')[$index] ?? ''
+                ];
+            }
+        }
 
     }
 

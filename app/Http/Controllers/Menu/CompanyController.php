@@ -12,7 +12,7 @@ use Livewire\WithPagination;
 class CompanyController extends Controller
 {
     protected $model = Company::class;
-    use WithPagination;
+
     protected $paginationTheme="bootstrap";
     /**
      * Display a listing of the resource.

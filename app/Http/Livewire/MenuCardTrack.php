@@ -179,6 +179,7 @@ class MenuCardTrack extends Component
         } */
 
         $priorityOptions = [
+            0 => 'No se agregó una prioridad',
             1 => 'Baja',
             2 => 'Media',
             3 => 'Alta',
