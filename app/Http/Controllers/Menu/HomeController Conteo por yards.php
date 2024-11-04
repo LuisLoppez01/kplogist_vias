@@ -29,37 +29,17 @@ class HomeController extends Controller
             $tracksections = $yard->tracks->pluck('tracksections')->flatten();
             $railroadSwitches = $yard->railroadSwitches;
     
-            // Contar las últimas inspecciones de tracksections
+            // Contar tracksections
             $totalTracksections = $tracksections->count();
-            
-            // Filtrar para contar solo las últimas inspecciones
-            $tracksectionCondition0 = $tracksections->filter(function ($tracksection) {
-                return $tracksection->latestInspection && $tracksection->latestInspection->condition == 0;
-            })->count();
+            $tracksectionCondition0 = $tracksections->where('latestInspection.condition', 0)->count();
+            $tracksectionCondition1 = $tracksections->where('latestInspection.condition', 1)->count();
+            $tracksectionWithoutInspection = $tracksections->where('latestInspection', null)->count();
     
-            $tracksectionCondition1 = $tracksections->filter(function ($tracksection) {
-                return $tracksection->latestInspection && $tracksection->latestInspection->condition == 1;
-            })->count();
-    
-            $tracksectionWithoutInspection = $tracksections->filter(function ($tracksection) {
-                return is_null($tracksection->latestInspection);
-            })->count();
-    
-            // Contar las últimas inspecciones de railroadSwitches
+            // Contar railroadSwitches
             $totalRailroadSwitches = $railroadSwitches->count();
-            
-            // Filtrar para contar solo las últimas inspecciones
-            $railroadSwitchCondition0 = $railroadSwitches->filter(function ($railroadSwitch) {
-                return $railroadSwitch->latestInspection && $railroadSwitch->latestInspection->condition == 0;
-            })->count();
-    
-            $railroadSwitchCondition1 = $railroadSwitches->filter(function ($railroadSwitch) {
-                return $railroadSwitch->latestInspection && $railroadSwitch->latestInspection->condition == 1;
-            })->count();
-    
-            $railroadSwitchWithoutInspection = $railroadSwitches->filter(function ($railroadSwitch) {
-                return is_null($railroadSwitch->latestInspection);
-            })->count();
+            $railroadSwitchCondition0 = $railroadSwitches->where('latestInspection.condition', 0)->count();
+            $railroadSwitchCondition1 = $railroadSwitches->where('latestInspection.condition', 1)->count();
+            $railroadSwitchWithoutInspection = $railroadSwitches->where('latestInspection', null)->count();
     
             return [
                 'yard_id' => $yard->id,
@@ -79,8 +59,7 @@ class HomeController extends Controller
             ];
         });
     
-       // return response()->json($result);
-       return view('menu.index', ['yardsData' => $result]);
+        return response()->json($result);
 
     }
 }

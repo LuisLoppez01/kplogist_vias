@@ -19,57 +19,20 @@
                 <h3 class="card-title">Inspecciones - {{ $yard['yard_name'] }}</h3>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <!-- Fila 1: Gráficas de Tracksections -->
-                    <div class="card col-md-6">
-                        <h5 class="card-header">Avance de inspeccón de Vias</h5>
-                        <div class="card-body">
-                            <div >
-                                <div class="chart-container">
-                                    <canvas id="tracksectionsPieChart_{{ $yard['yard_id'] }}"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card col-md-6">
-                        <h5 class="card-header">Inpecciones de vias</h5>
-                        <div class="card-body">
-                            <div >   
-                                <div class="chart-container">
-                                    <canvas id="tracksectionsConditionChart_{{ $yard['yard_id'] }}"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                    
+                <!-- Gráfico de Tracksections -->
+                <div class="chart-container">
+                    <canvas id="tracksectionsPieChart_{{ $yard['yard_id'] }}"></canvas>
                 </div>
-                <div class="row">
+                <div class="chart-container">
+                    <canvas id="tracksectionsConditionChart_{{ $yard['yard_id'] }}"></canvas>
+                </div>
 
-                    <!-- Fila 2: Gráficas de RailroadSwitches -->
-                    <div class="card col-md-6">
-                        <h5 class="card-header">Avance de inspeccón de Herrajes</h5>
-                        <div class="card-body">
-                            <div >
-                                <div class="chart-container">
-                                    <canvas id="railroadSwitchesPieChart_{{ $yard['yard_id'] }}"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card col-md-6">
-                        <h5 class="card-header">Inpecciones de Herrajes</h5>
-                        <div class="card-body">
-                            <div >
-                                <div class="chart-container">
-                                    <canvas id="railroadSwitchesConditionChart_{{ $yard['yard_id'] }}"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            
+                <!-- Gráfico de RailroadSwitches -->
+                <div class="chart-container">
+                    <canvas id="railroadSwitchesPieChart_{{ $yard['yard_id'] }}"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="railroadSwitchesConditionChart_{{ $yard['yard_id'] }}"></canvas>
                 </div>
             </div>
         </div>
@@ -140,13 +103,13 @@
                 new Chart(ctxTracksectionsCondition, {
                     type: 'bar',
                     data: {
-                        labels: ['Inspecciones OK', 'Inspecciones BO'],
+                        labels: ['Condición 0', 'Condición 1'],
                         datasets: [{
                             label: 'Condiciones de Tracksections',
                             data: [tracksectionsData.condition_0, tracksectionsData.condition_1],
                             backgroundColor: [
-                                'rgba(54, 162, 235, 0.6)', // Color para Inspecciones Realizadas
-                                'rgba(255, 99, 132, 0.6)'  // Color para condición 1
+                                'rgba(255, 206, 86, 0.6)', // Color para condición 0
+                                'rgba(75, 192, 192, 0.6)'  // Color para condición 1
                             ],
                         }]
                     },
@@ -198,13 +161,13 @@
                 new Chart(ctxRailroadSwitchesCondition, {
                     type: 'bar',
                     data: {
-                        labels: ['Inspecciones OK', 'Inspecciones BO'],
+                        labels: ['Condición 0', 'Condición 1'],
                         datasets: [{
                             label: 'Condiciones de RailroadSwitches',
                             data: [railroadSwitchesData.condition_0, railroadSwitchesData.condition_1],
                             backgroundColor: [
-                                'rgba(54, 162, 235, 0.6)', // Color para Inspecciones Realizadas
-                                'rgba(255, 99, 132, 0.6)'  // Color para condición 1
+                                'rgba(255, 206, 86, 0.6)', // Color para condición 0
+                                'rgba(75, 192, 192, 0.6)'  // Color para condición 1
                             ],
                         }]
                     },

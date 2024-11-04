@@ -31,4 +31,10 @@ class TrackSection extends Model
     public function inspectionsForTrackSection(){
         return $this->hasMany('App\Models\Inspection','tracksection_id');
     }
+    // En App\Models\TrackSection
+    public function latestInspection()
+    {
+        return $this->hasOne('App\Models\Inspection','tracksection_id')->latestOfMany();
+    }
+
 }

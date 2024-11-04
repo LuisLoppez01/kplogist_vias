@@ -25,4 +25,11 @@ class RailroadSwitch extends Model
     public function inspections(){
         return $this->hasMany('App\Models\Inspection','railroadswitch_id');
     }
+
+    // En App\Models\TrackSection
+    public function latestInspection()
+    {
+        return $this->hasOne('App\Models\Inspection','railroadswitch_id')->latestOfMany();
+    }
+
 }

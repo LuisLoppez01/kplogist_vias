@@ -80,7 +80,7 @@ class HomeController extends Controller
         });
     
        // return response()->json($result);
-       return view('menu.index', ['yardsData' => $result]);
+       return view('menu.index');
 
     }
 }
