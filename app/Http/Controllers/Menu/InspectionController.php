@@ -49,9 +49,9 @@ class InspectionController extends Controller
         }
 
 
-        /*elseif($user->hasRole('InspectorKP')){
+        elseif($user->hasRole('InspectorKP')){
             $inspections = $user->inspections()->paginate(8);
-        }*/
+        }
         return view('menu.inspections.index', compact('inspections'));
     }
 

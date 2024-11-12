@@ -42,11 +42,11 @@ class RedirectUnauthorized
 
         if ($user->hasAnyRole(['Admin', 'CorporativoKP'])) {
             return $next($request);
-        }elseif ($user->hasRole('Coordinador') && (app($model) instanceof TrackReport || app($model) instanceof CardTrack)){
+        }elseif ($user->hasAnyRole('Coordinador', 'Cliente') && (app($model) instanceof TrackReport || app($model) instanceof CardTrack)){
             return $next($request);
         }elseif ($user->hasRole('Supervisor') && (app($model) instanceof Inspection || app($model) instanceof CardTrack || app($model) instanceof TrackReport)) {
             return $next($request);
-        } elseif ($user->hasRole('InspectorKP') && app($model) instanceof Inspection || app($model) instanceof CardTrack) {
+        } elseif ($user->hasRole('InspectorKP') && app($model) instanceof Inspection) {
             return $next($request);
         } else {
             return redirect('/menu')->with('error', 'No tienes permisos para acceder a este recurso.');

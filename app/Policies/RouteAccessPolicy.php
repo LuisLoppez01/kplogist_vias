@@ -28,8 +28,7 @@ class   RouteAccessPolicy
         //return $user->hasAnyRole(['Admin', 'CorporativoKP','Coordinador']);
         if ($user->hasAnyRole(['Admin', 'CorporativoKP', 'Coordinador'])) {
             return true;
-        } elseif ($user->hasRole('Supervisor')) {
-
+        } elseif ($user->hasAnyRole('Supervisor','Cliente')) {
             return app($model) instanceof Inspection || app($model) instanceof CardTrack || app($model) instanceof TrackReport ;
         } elseif ($user->hasRole('InspectorKP')) {
             return app($model) instanceof Inspection && request()->method()=='GET' || request()->method()=='POST';
