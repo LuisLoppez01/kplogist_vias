@@ -129,8 +129,7 @@ class Inspection extends Model
     }
 
     public function getTrackSectionVerification($tracksection)
-    {
-//        return  'bg-danger';
+    {//        return  'bg-danger';
         $rcondition = [];
         if ($tracksection->inspectionsForTrackSection->count() > 0){
             $lastInspection = $tracksection->inspectionsForTrackSection
@@ -156,4 +155,10 @@ class Inspection extends Model
             return 'bg-success';
         }
     }
+
+    public function defects()
+{
+    return $this->hasMany(DefectTrack::class);
+}
+
 }
