@@ -14,6 +14,7 @@ class StatusSeeder extends Seeder
      */
     public function run()
     {
+
         Status::create(['name' => 'Vigente']);
         Status::create(['name' => 'Vencida']);
         Status::create(['name' => 'Archivada']);

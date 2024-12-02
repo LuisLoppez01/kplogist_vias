@@ -1,46 +1,1 @@
-<div class="form-group">
-    {!! Form::label('name', 'Nombre: ') !!}
-    {!! Form::text('name', null, ['class' => 'form-control'.($errors->has('name') ? ' is-invalid' : ''),'placeholder' => 'Escriba un nombre']) !!}
-
-    @error('name')
-        <span class="invalid-feedback">
-            <strong>{{$message}}</strong>
-        </span>
-    @enderror
-</div>
-{{--<div class="form-group">
-    {!! Form::label('RFC', 'RFC: ') !!}
-    {!! Form::text('RFC', null, ['class' => 'form-control'.($errors->has('name') ? ' is-invalid' : ''),'placeholder' => 'Escriba el RFC']) !!}
-
-    @error('name')
-        <span class="invalid-feedback">
-            <strong>{{$message}}</strong>
-        </span>
-    @enderror
-</div>--}}
-<div class="form-group">
-    <strong>Ubicación:</strong>
-    @error('locations')
-            <small class="text-danger">
-                <strong>{{$message}}</strong>
-            </small>
-    @enderror
-
-    {!! Form::select('location_id', $locations, null, ['class' => 'form-control']) !!}
-</div>
-
-
-{{--<strong>Permisos</strong>
-@error('permissions')
-        <small class="text-danger">
-            <strong>{{$message}}</strong>
-        </small>
-@enderror
- @foreach ($permissions as $permission)
-    <div>
-        <label>
-            {!! Form::checkbox('permissions[]', $permission->id, null, ['class' => "mr-1"]) !!}
-            {{$permission->name}}
-        </label>
-    </div>
-@endforeach --}}
+<div class="form-group">    {!! Form::label('name', 'Nombre: ') !!}    {!! Form::text('name', null, ['class' => 'form-control'.($errors->has('name') ? ' is-invalid' : ''),'placeholder' => 'Escriba un nombre']) !!}    @error('name')        <span class="invalid-feedback">            <strong>{{$message}}</strong>        </span>    @enderror</div>{{--<div class="form-group">    {!! Form::label('RFC', 'RFC: ') !!}    {!! Form::text('RFC', null, ['class' => 'form-control'.($errors->has('name') ? ' is-invalid' : ''),'placeholder' => 'Escriba el RFC']) !!}    @error('name')        <span class="invalid-feedback">            <strong>{{$message}}</strong>        </span>    @enderror</div>--}}<div class="form-group">    <strong>Ubicación:</strong>    @error('locations')            <small class="text-danger">                <strong>{{$message}}</strong>            </small>    @enderror    {!! Form::select('location_id', $locations, null, ['class' => 'form-control']) !!}</div>{{--<strong>Permisos</strong>@error('permissions')        <small class="text-danger">            <strong>{{$message}}</strong>        </small>@enderror @foreach ($permissions as $permission)    <div>        <label>            {!! Form::checkbox('permissions[]', $permission->id, null, ['class' => "mr-1"]) !!}            {{$permission->name}}        </label>    </div>@endforeach --}}

@@ -56,5 +56,6 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('inspection');
+        Schema::dropIfExists('defect_tracks');
     }
 };

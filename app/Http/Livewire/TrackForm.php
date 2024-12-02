@@ -16,9 +16,9 @@ class TrackForm extends Component
     public function render()
     {
         if ($this->track && !$this->selectedCompany) {
-            $this->company = $this->track->yard->company->id;
+            $this->company = $this->track->yard == null ? 0 :$this->track->yard->company->id;
             $this->selectedCompany = $this->company;
-            $this->selectedYard = $this->track->yard->id;
+            $this->selectedYard = $this->track->yard == null ? 0 :$this->track->yard->id;
         }
         if (!$this->selectedCompany) {
             $this->yards=Yard::whereIn('company_id',$this->companies)->pluck('name','id')->toArray();

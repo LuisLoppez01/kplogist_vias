@@ -74,6 +74,9 @@ class TrackController extends Controller
             'lenght_rails_two' => 'required',*/
             /*'railroadswitch_interior' => 'required',
             'railroadswitch_exterior' => 'required',*/
+        ],
+        [
+            'yard_id.required' => 'El campo Patio es obligatorio',
         ]);
         $track = Track::create([
             'name' => $request->name,
