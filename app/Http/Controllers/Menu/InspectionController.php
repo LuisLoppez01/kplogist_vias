@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ReporteInspeccion;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\ValidationException;
 
 class InspectionController extends Controller
 {
@@ -76,82 +77,93 @@ class InspectionController extends Controller
     {
 
         //return $request;
-        if ($request->condition == 1) {
-            $request->validate([
-                'defecto.*' => 'required',
-                'priorities.*' => 'required',
-                'comments.*' => 'required|string|max:255',
-            ], [
-                'defecto.*.required' => 'Por favor, seleccione un defecto.',
-                'priorities.*.required' => 'Por favor, seleccione una prioridad.',
-                'comments.*.required' => 'Por favor, rellene el comentario.',
-            ]);
-        }
-        if ($request->type_inspection == 1) {
-            $lastInspection = Inspection::where('yard_id', $request->yard_id)
-                ->where('track_id', $request->track_id)
-                ->where('tracksection_id', $request->tracksection_id)
-                ->orderBy('created_at', 'desc')
-                ->first();
-            if ($lastInspection !== null){
-                $lastInspection->active = 3;
-                $lastInspection->save();
-            }
-            $inspection = Inspection::create([
-                'user_id' => auth()->id(),
-                'yard_id' => $request->yard_id,
-                'track_id' => $request->track_id,
-                'tracksection_id' => $request->tracksection_id,
-                'railroadswitch_id' => null,
-                'date' => $request->date,
-                'type_inspection' => $request->type_inspection,
-                'condition' => $request->condition,
-                'active' => 1
-            ]);
-        }
-        if ($request->type_inspection == 2) {
-            $lastInspection = Inspection::where('yard_id', $request->yard_id)
-                ->where('railroadswitch_id', $request->railroadswitch_id)
-                ->orderBy('created_at', 'desc')
-                ->first();
-            if ($lastInspection !== null){
-                $lastInspection->active = 3;
-                $lastInspection->save();
-            }
-            $inspection = Inspection::create([
-                'user_id' => auth()->id(),
-                'yard_id' => $request->yard_id,
-                'track_id' => null,
-                'tracksection_id' => null,
-                'railroadswitch_id' => $request->railroadswitch_id,
-                'date' => $request->date,
-                'type_inspection' => $request->type_inspection,
-                'condition' => $request->condition,
-                'active' => 1
-            ]);
-        }
-        if ($request->condition == 1) {
-            $count = count($request->defecto);
-            for ($i = 0; $i < $count; $i++) {
-                $inspection->defect_track()->create([
-                    'component_catalogs_id' => $request->defecto[$i],
-                    'priority' => $request->priorities[$i],
-                    'comment' => $request->comments[$i]
+        try{
+            if ($request->condition == 1) {
+                $request->validate([
+                    'defecto.*' => 'required',
+                    'priorities.*' => 'required',
+                    'comments.*' => 'required|string|max:255',
+                ], [
+                    'defecto.*.required' => 'Por favor, seleccione un defecto.',
+                    'priorities.*.required' => 'Por favor, seleccione una prioridad.',
+                    'comments.*.required' => 'Por favor, rellene el comentario.',
                 ]);
             }
-        }
-        $inspectionId = $inspection->getKey();
+            if ($request->type_inspection == 1) {
+                $lastInspection = Inspection::where('yard_id', $request->yard_id)
+                    ->where('track_id', $request->track_id)
+                    ->where('tracksection_id', $request->tracksection_id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($lastInspection !== null){
+                    $lastInspection->active = 3;
+                    $lastInspection->save();
+                }
+                $inspection = Inspection::create([
+                    'user_id' => auth()->id(),
+                    'yard_id' => $request->yard_id,
+                    'track_id' => $request->track_id,
+                    'tracksection_id' => $request->tracksection_id,
+                    'railroadswitch_id' => null,
+                    'date' => $request->date,
+                    'type_inspection' => $request->type_inspection,
+                    'condition' => $request->condition,
+                    'active' => 1
+                ]);
+            }
+            if ($request->type_inspection == 2) {
+                $lastInspection = Inspection::where('yard_id', $request->yard_id)
+                    ->where('railroadswitch_id', $request->railroadswitch_id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($lastInspection !== null){
+                    $lastInspection->active = 3;
+                    $lastInspection->save();
+                }
+                $inspection = Inspection::create([
+                    'user_id' => auth()->id(),
+                    'yard_id' => $request->yard_id,
+                    'track_id' => null,
+                    'tracksection_id' => null,
+                    'railroadswitch_id' => $request->railroadswitch_id,
+                    'date' => $request->date,
+                    'type_inspection' => $request->type_inspection,
+                    'condition' => $request->condition,
+                    'active' => 1
+                ]);
+            }
+            if ($request->condition == 1) {
+                $count = count($request->defecto);
+                for ($i = 0; $i < $count; $i++) {
+                    $inspection->defect_track()->create([
+                        'component_catalogs_id' => $request->defecto[$i],
+                        'priority' => $request->priorities[$i],
+                        'comment' => $request->comments[$i]
+                    ]);
+                }
+            }
+            $inspectionId = $inspection->getKey();
 
-        if ($request->hasFile('file')) {
-            $image = $request->file('file');
-            $route = 'images/InspectionImage' . $inspectionId . '.' . $image->getClientOriginalExtension();
-            $url = Storage::put($route, file_get_contents($image));
+            if ($request->hasFile('file')) {
+                $image = $request->file('file');
+                $route = 'images/InspectionImage' . $inspectionId . '.' . $image->getClientOriginalExtension();
+                $url = Storage::put($route, file_get_contents($image));
 
-            $inspection->image()->create([
-                'url' => $route
-            ]);
+                $inspection->image()->create([
+                    'url' => $route
+                ]);
+            }
+            return redirect()->route('menu.inspections.create')->with('info','Se registró la inspección correctamente');
+        }catch (ValidationException $e) {
+            return back()->withInput()
+                ->withErrors($e->errors())
+                ->with('error', 'Hubo un error al guardar la información.');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error inesperado: ' . $e->getMessage());
         }
-        return back()->withInput()->with('info', 'Se registró satisfactoriamente');
+
     }
 
     /**

@@ -49,7 +49,7 @@ class RoleController extends Controller
         ]);
 
         $role->permissions()->attach($request->permissions);
-        return redirect()->route('menu.roles.index')->with('info','Se registró el rol correctamente');
+
     }
 
     /**
