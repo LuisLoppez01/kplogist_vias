@@ -7,8 +7,12 @@ use Livewire\Component;
 class RailRoadForm extends Component
 {
     public $selectedCompany,$selectedYard, $company, $yards;
-    public   $railroadswitch, $companies, $companies_id;
+    public   $railroadswitch, $companies, $companies_id, $name, $type_switch;
 
+    public function mount(){
+        $this->name = old('name',"");
+        $this->type_switch = old('type_switch',"");
+    }
     public function render()
     {
         if ($this->railroadswitch && !$this->selectedCompany) {

@@ -43,6 +43,10 @@ class ComponentCatalogController extends Controller
             'name' => 'required',
             'type_component'=> 'required',
 
+        ],
+        [
+            'name.required' => 'El campo nombre es obligatorio',
+            'type_component.required' => 'El campo tipo de componente es obligatorio',
         ]);
         $componentcatalogs=ComponentCatalog::create([
             'name' => $request->name,
@@ -88,8 +92,13 @@ class ComponentCatalogController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'type_component' => 'required'
-        ]);
+            'type_component'=> 'required',
+
+        ],
+            [
+                'name.required' => 'El campo nombre es obligatorio',
+                'type_component.required' => 'El campo tipo de componente es obligatorio',
+            ]);
         $componentcatalog->update([
             'name' => $request->name,
             'type_component' => $request->type_component

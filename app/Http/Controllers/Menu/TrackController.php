@@ -72,11 +72,14 @@ class TrackController extends Controller
             'lenght_rails_one' => 'required',
             /*'weight_rails_two' => 'required',
             'lenght_rails_two' => 'required',*/
-            /*'railroadswitch_interior' => 'required',
-            'railroadswitch_exterior' => 'required',*/
         ],
         [
             'yard_id.required' => 'El campo Patio es obligatorio',
+            'type_track.required' => 'El campo Tipo de vía es obligatorio',
+            'type_tracksleeper_one.required' => 'El campo Durmiente es obligatorio',
+            'lenght_tracksleeper_one.required' => 'El campo Cantidad de durmientes es obligatorio',
+            'weight_rails_one.required' => 'El campo Calibre de riel es obligatorio',
+            'lenght_rails_one.required' => 'El campo Longitud es obligatorio',
         ]);
         $track = Track::create([
             'name' => $request->name,
@@ -92,8 +95,6 @@ class TrackController extends Controller
             'lenght_rails_one' => $request->lenght_rails_one,
             'weight_rails_two' => $request->weight_rails_two,
             'lenght_rails_two' => $request->lenght_rails_two,
-            /*'railroadswitch_interior' => $request->railroadswitch_interior,
-            'railroadswitch_exterior' => $request->railroadswitch_exterior,*/
         ]);
 
         return redirect()->route('menu.tracks.index')->with('info', 'Se registró la vía correctamente');
@@ -151,15 +152,21 @@ class TrackController extends Controller
             'type_track' => 'required',
             'type_tracksleeper_one' => 'required',
             'lenght_tracksleeper_one' => 'required',
-            /*'type_tracksleeper_two' => 'required',
-            'lenght_tracksleeper_two' => 'required',*/
+            /*          'type_tracksleeper_two' => 'required',
+                        'lenght_tracksleeper_two' => 'required',*/
             'weight_rails_one' => 'required',
             'lenght_rails_one' => 'required',
             /*'weight_rails_two' => 'required',
             'lenght_rails_two' => 'required',*/
-            /*'railroadswitch_interior' => 'required',
-            'railroadswitch_exterior' => 'required',*/
-        ]);
+        ],
+            [
+                'yard_id.required' => 'El campo Patio es obligatorio',
+                'type_track.required' => 'El campo Tipo de vía es obligatorio',
+                'type_tracksleeper_one.required' => 'El campo Durmiente es obligatorio',
+                'lenght_tracksleeper_one.required' => 'El campo Cantidad de durmientes es obligatorio',
+                'weight_rails_one.required' => 'El campo Calibre de riel es obligatorio',
+                'lenght_rails_one.required' => 'El campo Longitud es obligatorio',
+            ]);
         $track->update([
             'name' => $request->name,
             'yard_id' => $request->yard_id,
@@ -174,8 +181,7 @@ class TrackController extends Controller
             'lenght_rails_one' => $request->lenght_rails_one,
             'weight_rails_two' => $request->weight_rails_two,
             'lenght_rails_two' => $request->lenght_rails_two,
-            /*'railroadswitch_interior' => $request->railroadswitch_interior,
-            'railroadswitch_exterior' => $request->railroadswitch_exterior,*/
+
         ]);
 
         return redirect()->route('menu.tracks.index', $track)->with('info', 'Se actualizó la vía correctamente');

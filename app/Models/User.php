@@ -30,7 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'company_id',
-        'hola'
+        'active'
     ];
 
     /**
@@ -76,5 +76,9 @@ class User extends Authenticatable
     }
     public function inspections(){
         return $this->hasMany('App\Models\Inspection');
+    }
+    public function getIsActiveAttribute()
+    {
+        return $this->active == 1;
     }
 }

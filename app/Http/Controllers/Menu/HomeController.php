@@ -10,8 +10,8 @@ use App\Models\AssignYard;       // Para manejar la asignación de patios
 use App\Models\TrackSection;      // Para manejar secciones de vías
 use App\Models\User;             // Para manejar usuarios
 use App\Models\Yard;             // Para manejar patios
-use App\Models\Track;   
-
+use App\Models\Track;
+use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     public function index(Request $request)
@@ -23,20 +23,20 @@ class HomeController extends Controller
         } else {
             $yards = $user->yards()->with(['tracks.tracksections.latestInspection', 'railroadSwitches.latestInspection'])->orderBy('id', 'asc')->get();
         }
-    
+
         $result = $yards->map(function ($yard) {
             // Obtener todas las tracksections y railroadSwitches de cada yard
             $tracksections = $yard->tracks->pluck('tracksections')->flatten();
             $railroadSwitches = $yard->railroadSwitches;
-    
+
             // Contar las últimas inspecciones de tracksections
             $totalTracksections = $tracksections->count();
-            
+
             // Filtrar para contar solo las últimas inspecciones
             $tracksectionCondition0 = $tracksections->filter(function ($tracksection) {
                 return $tracksection->latestInspection && $tracksection->latestInspection->condition == 0;
             })->count();
-    
+
             $tracksectionCondition1 = $tracksections->filter(function ($tracksection) {
                 return $tracksection->latestInspection && $tracksection->latestInspection->condition == 1;
             });
@@ -49,7 +49,7 @@ class HomeController extends Controller
             ];
             // Contar prioridades de defectos para cada inspección en condición 0
             foreach ($tracksectionCondition1 as $tracksection) {
-                $inspection = $tracksection->latestInspection;        
+                $inspection = $tracksection->latestInspection;
                 if ($inspection) {
                     // Recorrer cada defecto asociado a la inspección y contar según su prioridad
                     $inspection->defect_track->each(function ($defect) use (&$defectsPriorityCounts) {
@@ -67,19 +67,19 @@ class HomeController extends Controller
                     });
                 }
             }
-            //////////////    
+            //////////////
             $tracksectionWithoutInspection = $tracksections->filter(function ($tracksection) {
                 return is_null($tracksection->latestInspection);
             })->count();
-    
+
             // Contar las últimas inspecciones de railroadSwitches
             $totalRailroadSwitches = $railroadSwitches->count();
-            
+
             // Filtrar para contar solo las últimas inspecciones
             $railroadSwitchCondition0 = $railroadSwitches->filter(function ($railroadSwitch) {
                 return $railroadSwitch->latestInspection && $railroadSwitch->latestInspection->condition == 0;
             })->count();
-    
+
             $railroadSwitchCondition1 = $railroadSwitches->filter(function ($railroadSwitch) {
                 return $railroadSwitch->latestInspection && $railroadSwitch->latestInspection->condition == 1;
             });
@@ -92,7 +92,7 @@ class HomeController extends Controller
             ];
             // Contar prioridades de defectos para cada inspección en condición 0
             foreach ($railroadSwitchCondition1 as $railroadSwitch) {
-                $inspection = $railroadSwitch->latestInspection;        
+                $inspection = $railroadSwitch->latestInspection;
                 if ($inspection) {
                     // Recorrer cada defecto asociado a la inspección y contar según su prioridad
                     $inspection->defect_track->each(function ($defect) use (&$defectsPriorityCountsRS) {
@@ -110,12 +110,12 @@ class HomeController extends Controller
                     });
                 }
             }
-            //////////////  
-    
+            //////////////
+
             $railroadSwitchWithoutInspection = $railroadSwitches->filter(function ($railroadSwitch) {
                 return is_null($railroadSwitch->latestInspection);
             })->count();
-    
+
             return [
                 'yard_id' => $yard->id,
                 'yard_name' => $yard->name,
@@ -135,7 +135,7 @@ class HomeController extends Controller
                 ],
             ];
         });
-    
+//        dump(Auth::check());
        // return response()->json($result);
        return view('menu.index', ['yardsData' => $result]);
 

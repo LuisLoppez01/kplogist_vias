@@ -56,7 +56,8 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
-
+            'company_id' => 'required',
+            'roles' => 'required'
         ]);
         $User=User::create([
             'name' => $request->name,
@@ -119,9 +120,9 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'company_id' => 'required'
+            'company_id' => 'required',
+            'roles' => 'required'
         ]);
-
         if ($user->company_id != $request->company_id){
             $user->yards()->detach();
         }
@@ -147,5 +148,16 @@ class UserController extends Controller
         $user->yards()->detach();
         $user->delete();
         return redirect()->route('menu.users.index')->with('info','Se eliminó el usuario correctamente');
+    }
+
+    public function desactivate(User $user)
+    {
+        $user->update(['active' => 0]);
+        return redirect()->route('menu.users.index')->with('success', 'Usuario desactivado con éxito.');
+    }
+    public function activate(User $user)
+    {
+        $user->update(['active' => 1]);
+        return redirect()->route('menu.users.index')->with('success', 'Usuario activado con éxito.');
     }
 }

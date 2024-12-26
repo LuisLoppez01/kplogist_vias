@@ -52,7 +52,13 @@ class RailroadSwitchController extends Controller
     {
         $request->validate([
             'name' => 'required',
-
+            'type_switch' => 'required',
+            'yard_id' => 'required',
+        ],
+        [
+            'name.required' => 'El campo nombre es obligatorio',
+            'type_switch.required' => 'El campo tipo de cambio es obligatorio',
+            'yard_id.required' => 'El campo patio es obligatorio',
         ]);
         $railroadSwitch=RailroadSwitch::create([
             'name' => $request->name,
@@ -108,8 +114,13 @@ class RailroadSwitchController extends Controller
         $request->validate([
             'name' => 'required',
             'type_switch' => 'required',
-            'yard_id' => 'required'
-        ]);
+            'yard_id' => 'required',
+        ],
+            [
+                'name.required' => 'El campo nombre es obligatorio',
+                'type_switch.required' => 'El campo tipo de cambio es obligatorio',
+                'yard_id.required' => 'El campo patio es obligatorio',
+            ]);
          $railroadswitch->update([
             'name' => $request->name,
             'type_switch' => $request->type_switch,

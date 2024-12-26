@@ -11,6 +11,11 @@ class TrackSectionForm extends Component
 {
     public $selectedCompany, $selectedYard, $selectedTrack;
     public $companies, $companies_id, $yards, $tracks,$company, $tracksection;
+    public $name;
+    public function mount(){
+        $this->name = old('name',"");
+    }
+
     public function render()
     {
 
@@ -31,7 +36,7 @@ class TrackSectionForm extends Component
         }else{
             $this->tracks=Track::track($this->selectedYard)->pluck('name','id')->toArray();
         }
-//        dump($this->tracksection);
+//       dump($this->tracksection);
         return view('livewire.track-section-form', [
             'companies' => $this->companies,
             'yards' => $this->yards,

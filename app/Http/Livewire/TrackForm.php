@@ -10,11 +10,24 @@ class TrackForm extends Component
 {
     public $selectedCompany,$selectedYard, $company, $yards;
     public  $route, $track, $components, $companies, $companies_id;
-
-
+    public $name, $type_track,$type_tracksleeper_one,$type_tracksleeper_two,$lenght_tracksleeper_one,$lenght_tracksleeper_two,$lenght_rails_one,$lenght_rails_two,
+    $weight_rails_one,$weight_rails_two;
+    public function mount(){
+        $this->name = old('name',"");
+        $this->type_track = old('type_track',"");
+        $this->lenght_tracksleeper_one = old('lenght_tracksleeper_one',"");
+        $this->lenght_tracksleeper_two = old('lenght_tracksleeper_two',"");
+        $this->type_tracksleeper_one = old('type_tracksleeper_one',"");
+        $this->type_tracksleeper_two = old('type_tracksleeper_two',"");
+        $this->lenght_rails_one = old('lenght_rails_one',"");
+        $this->lenght_rails_two = old('lenght_rails_two',"");
+        $this->weight_rails_one = old('weight_rails_one',"");
+        $this->weight_rails_two = old('weight_rails_two',"");
+    }
 
     public function render()
     {
+//        dump(session()->all());
         if ($this->track && !$this->selectedCompany) {
             $this->company = $this->track->yard == null ? 0 :$this->track->yard->company->id;
             $this->selectedCompany = $this->company;
