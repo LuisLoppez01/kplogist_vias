@@ -18,8 +18,6 @@ class UserController extends Controller
      */
     public function index()
     {
-//        $user=User::find(17);
-//        dd($user->yards);
         return view('menu.users.index');
     }
 
@@ -57,18 +55,14 @@ class UserController extends Controller
             'email' => 'required',
             'password' => 'required',
             'company_id' => 'required',
-            'roles' => 'required'
+            'role' => 'required'
         ]);
         $User=User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password'=>bcrypt($request->password),
             'company_id'=>$request->company_id,
-        ])->assignRole($request->roles);
-        /*$User->yards()->attach($request->yard_id);*/
-        // $User->company()->attach($request->company_id);
-
-
+        ])->assignRole($request->role);
 
         return redirect()->route('menu.users.index')->with('info','Se registró el usuario correctamente');
     }
@@ -92,7 +86,6 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-
         $currentUser = User::find(auth()->id());
         if ($currentUser->hasAnyRole(['Admin', 'CorporativoKP'])) {
             $companies= Company::pluck('name', 'id')->toArray();
@@ -115,13 +108,11 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->roles()->sync($request->roles);
-
         $request->validate([
             'name' => 'required',
             'email' => 'required',
             'company_id' => 'required',
-            'roles' => 'required'
+            'role' => 'required'
         ]);
         if ($user->company_id != $request->company_id){
             $user->yards()->detach();
@@ -131,7 +122,7 @@ class UserController extends Controller
             'email' => $request->email,
             'company_id'=>$request->company_id
         ]);
-
+        $user->roles()->sync($request->role);
 
         return redirect()->route('menu.users.index', $user)->with('info','Se actualizó la asignación correctamente');
     }
